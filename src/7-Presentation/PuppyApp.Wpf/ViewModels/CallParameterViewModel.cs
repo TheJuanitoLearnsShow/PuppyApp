@@ -12,8 +12,36 @@ namespace PuppyApp.Wpf.ViewModels
     [ViewModel]
     partial class CallParameterViewModel : INotifyDataErrorInfo
     {
-        [Property] private string _label;
-        [Property] private string _value;
+        private string _label;
+        private string _value;
+
+        public string Label
+        {
+            get => _label;
+            set
+            {
+                if (_label != value)
+                {
+                    _label = value;
+                    OnPropertyChanged("Label");
+                }
+            }
+        }
+
+        public string Value
+        {
+            get => _value;
+            set
+            {
+                if (_value != value)
+                {
+                    _value = value;
+                    OnPropertyChanged("Value");
+                    ValidateValue();
+                }
+            }
+        }
+
         private readonly Dictionary<string, List<string>> _errorsByPropertyName = new Dictionary<string, List<string>>();
 
         public bool HasErrors => _errorsByPropertyName.Any();
@@ -26,12 +54,12 @@ namespace PuppyApp.Wpf.ViewModels
             _errorsByPropertyName[propertyName] : null;
         }
 
-        private void ValidateUserName()
+        private void ValidateValue()
         {
             ClearErrors(nameof(Value));
             if (string.IsNullOrWhiteSpace(Value))
             {
-                AddError(nameof(Value), "Username cannot be empty.");
+                AddError(nameof(Value), "Cannot be empty.");
             }
         }
         private void OnErrorsChanged(string propertyName)
