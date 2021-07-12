@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <local1:CallParametersControl></local1:CallParametersControl>
+        <local1:RequestControl></local1:RequestControl>
+        
     </Grid>
 </Window>

@@ -1,5 +1,8 @@
-﻿using System;
+﻿using PuppyApp.Wpf.Mappers;
+using PuppyApp.Wpf.ViewModels;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +26,15 @@ namespace PuppyApp.Wpf
         public MainWindow()
         {
             InitializeComponent();
+            var sampleJsonSchema = File.ReadAllText("Samples\\SampleJSonSchema.json");
+            var request = OpenApiToRequestViewModelMapper.MapToRequest(sampleJsonSchema).Result;
+            DataContext = request;
+            //request.ContinueWith(InitializeRequestDisplay);
+        }
+
+        private async Task InitializeRequestDisplay(Task<RequestViewModel> request)
+        {
+            DataContext = await request;
         }
     }
 }
