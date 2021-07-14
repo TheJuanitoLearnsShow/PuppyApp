@@ -28,7 +28,7 @@ namespace PuppySqlWrapper
 
             using SqlDataReader reader = command.ExecuteReader();
 
-            await WriteDataSetAsJsonAsync(writer, reader, options, dataSetNames);
+            await WriteMultiDataSetAsJsonAsync(writer, reader, options, dataSetNames);
             reader.Close();
         }
 
@@ -45,12 +45,12 @@ namespace PuppySqlWrapper
 
             using SqlDataReader reader = command.ExecuteReader();
 
-            await WriteDataSetAsJsonAsync(writer, reader, options, dataSetNames);
+            await WriteMultiDataSetAsJsonAsync(writer, reader, options, dataSetNames);
             reader.Close();
         }
 
         // adapted from https://stackoverflow.com/a/59780795/217323 and https://stackoverflow.com/a/34927336/217323
-        public static async Task WriteDataSetAsJsonAsync(Utf8JsonWriter writer, SqlDataReader reader,
+        public static async Task WriteMultiDataSetAsJsonAsync(Utf8JsonWriter writer, SqlDataReader reader,
                     JsonSerializerOptions options, string[] dataSetNames)
         {
 

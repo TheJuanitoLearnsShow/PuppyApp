@@ -1,6 +1,7 @@
 ﻿using NJsonSchema;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace PuppySqlWrapper
 {
     public class SqlInputAsJsonProcessor
     {
+
         private static string spParamsTypesQry = @"
                     select
                     name ParameterName,  
@@ -58,18 +60,47 @@ namespace PuppySqlWrapper
             {"xml", "string"}
 
         };
-        public async Task ValidateJson(string spname, string jsonPayload, string spOpenApiSchema)
-        {
-            var schema = await JsonSchema.FromJsonAsync(spOpenApiSchema);
-            var errors = schema.Validate(jsonPayload);
-            foreach (var error in errors)
-                Console.WriteLine(error.Path + ": " + error.Kind);
+        private readonly string _connStr;
 
+        public SqlInputAsJsonProcessor(string connStr)
+        {
+            _connStr = connStr;
         }
 
-        public async Task<string> GetJsonSchemaForStoredProc(string connStr, string spname)
+        public async Task<IEnumerable<(string,string)>> ValidateJsonInputForSp(string spname, string jsonPayload)
         {
-            using var connection = new SqlConnection(connStr);
+            var jsonSchema = await GetJsonSchemaForStoredProc(spname);
+            var schema = await JsonSchema.FromJsonAsync(jsonSchema);
+            var errors = schema.Validate(jsonPayload);
+            var errorResults = errors.Select(error => (error.Path, error.Kind.ToString() ));
+            return errorResults;
+        }
+
+        public async Task ExecStoredProc(string spName, string jsonPayload, Func<SqlDataReader, Task> onResult)
+        {
+            using var connection = new SqlConnection(_connStr);
+            SqlCommand command = new SqlCommand(spName, connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            var dictParams = JsonSerializer.Deserialize<Dictionary<string,object>>(jsonPayload);
+            if (dictParams != null)
+            {
+                foreach(var p in dictParams)
+                {
+                    command.Parameters.AddWithValue(p.Key, p.Value);
+                }
+            }
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+            await onResult(reader);
+            
+        }
+
+        public async Task<string> GetJsonSchemaForStoredProc(string spname)
+        {
+            using var connection = new SqlConnection(_connStr);
             SqlCommand command = new(spParamsTypesQry, connection);
            
             command.Parameters.AddWithValue("@spName", spname);
