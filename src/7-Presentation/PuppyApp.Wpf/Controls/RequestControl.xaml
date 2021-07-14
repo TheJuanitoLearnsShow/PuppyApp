@@ -13,16 +13,14 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     
-                    <materialDesign:Card Padding="32" Margin="16">
                         <Grid Margin="16">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="3*"></ColumnDefinition>
                                 <ColumnDefinition Width="8*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{Binding Label}"></TextBlock>
+                        <TextBlock Grid.Column="0" Text="{Binding Label}" HorizontalAlignment="Right" Margin="8" VerticalAlignment="Center"></TextBlock>
                             <TextBox Grid.Column="1" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="{Binding Label}"></TextBox>
                         </Grid>
-                    </materialDesign:Card>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

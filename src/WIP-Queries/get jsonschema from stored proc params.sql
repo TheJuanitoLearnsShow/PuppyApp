@@ -17,3 +17,4 @@ select
                     then ServerProperty('collation') end) Collation  
 
     from sys.parameters where object_id = object_id(@spName)
+	for json auto

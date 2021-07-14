@@ -1,5 +1,6 @@
 ﻿using PuppyApp.Wpf.Mappers;
 using PuppyApp.Wpf.ViewModels;
+using PuppySqlWrapper;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,7 +27,10 @@ namespace PuppyApp.Wpf
         public MainWindow()
         {
             InitializeComponent();
-            var sampleJsonSchema = File.ReadAllText("Samples\\SampleJSonSchema.json");
+
+            var spInfo = new SqlInputAsJsonProcessor();
+            var connStr = @"Data Source=.\sqlexpress;Database=SampleDb;Integrated Security=True;Pooling=False;MultipleActiveResultSets=True;Connect Timeout=60;";
+            var sampleJsonSchema = spInfo.GetJsonSchemaForStoredProc(connStr, "spEnrollStudent").Result; //File.ReadAllText("Samples\\SampleJSonSchema.json");
             var request = OpenApiToRequestViewModelMapper.MapToRequest(sampleJsonSchema).Result;
             DataContext = request;
             //request.ContinueWith(InitializeRequestDisplay);

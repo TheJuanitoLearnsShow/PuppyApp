@@ -13,5 +13,8 @@ INSERT INTO [dbo].[Students]
            (@FirstName
            ,@LastName
            ,@Age)
+
+Select SCOPE_IDENTITY() StudentId;
+
 GO
 

@@ -72,7 +72,7 @@ namespace PuppySqlWrapper
             using var connection = new SqlConnection(connStr);
             SqlCommand command = new(spParamsTypesQry, connection);
            
-                command.Parameters.AddWithValue("@spName", spname);
+            command.Parameters.AddWithValue("@spName", spname);
             connection.Open();
 
             using SqlDataReader reader = command.ExecuteReader();
@@ -81,6 +81,9 @@ namespace PuppySqlWrapper
             using var jsonWriter = new Utf8JsonWriter(fs);
             await WriteDataSetAsJsonSchemaAsync(jsonWriter, reader, null, spname);
             reader.Close();
+            await jsonWriter.FlushAsync();
+            string json = Encoding.UTF8.GetString(fs.ToArray());
+            return json;
         }
 
         public static async Task WriteDataSetAsJsonSchemaAsync(Utf8JsonWriter writer, SqlDataReader reader,
@@ -88,10 +91,7 @@ namespace PuppySqlWrapper
         {
 
             writer.WriteStartObject();
-            //          "$id": "https://example.com/person.schema.json",
-            //"$schema": "https://json-schema.org/draft/2020-12/schema",
-            //"title": "Person",
-            //"type": "object",
+           
             AddPropertyAndValue(writer, "$id", "https://example.com/person.schema.json");
             AddPropertyAndValue(writer, "$schema", "https://json-schema.org/draft/2020-12/schema");
             AddPropertyAndValue(writer, "title", $"{spName}Request");
@@ -113,7 +113,7 @@ namespace PuppySqlWrapper
                 AddPropertyAndValue(writer, "type", translatedType);
                 writer.WriteEndObject();
 
-                if (propName.StartsWith("Optional", StringComparison.OrdinalIgnoreCase))
+                if (!propName.StartsWith("Optional", StringComparison.OrdinalIgnoreCase))
                 {
                     requiredFields.AddLast(propName);
                 }
@@ -121,7 +121,7 @@ namespace PuppySqlWrapper
             writer.WriteEndObject();
 
             writer.WritePropertyName("required");
-            writer.WriteStartArray();\
+            writer.WriteStartArray();
             foreach(var f in requiredFields)
             {
                 writer.WriteStringValue(f);
