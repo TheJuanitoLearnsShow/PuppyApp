@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="SqlUtils.fs" />
+    <Compile Include="ReflectionUtils.fs" />
+    <Compile Include="SqlTypeTranslator.fs" />
+    <Compile Include="StoredProcInfo.fs" />
+    <Compile Include="RangeValidations.fs" />
+    
+    <Compile Include="PossibleValuesFromSql.fs" />
+    <Compile Include="LookupValuesFromSql.fs" />
+    <Compile Include="ValidValuesFromSql.fs" />
+    <Compile Include="StoredProcProcessor.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Humanizer.Core" Version="2.5.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\1-Core\PuppyData.Types\PuppyData.Types.fsproj" />
+  </ItemGroup>
+
+
+</Project>

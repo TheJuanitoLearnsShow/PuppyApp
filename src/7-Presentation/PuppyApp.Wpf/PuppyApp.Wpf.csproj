@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\3-Services\PuppySqlWrapper\PuppySqlWrapper.csproj" />
+    <ProjectReference Include="..\Puppy.SqlViewModels\Puppy.SqlViewModels.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -59,6 +59,7 @@ namespace PuppyApp.Wpf.ViewModels
         }
 
         public decimal MinValue { get; set; }
+        public decimal MaxValue { get; set; }
 
         private readonly Dictionary<string, List<string>> _errorsByPropertyName = new Dictionary<string, List<string>>();
 
@@ -85,6 +86,7 @@ namespace PuppyApp.Wpf.ViewModels
             _value = value;
             _isRequired = isRequired;
             _propType = propTypeName;
+            //propTypeName.
         }
 
         private IEnumerable<string> ValidateInt(string v)
@@ -94,6 +96,10 @@ namespace PuppyApp.Wpf.ViewModels
                 if (j < MinValue)
                 {
                     return new string[] { $"Cannot be less than {MinValue}" };
+                }
+                else if (j > MaxValue)
+                {
+                    return new string[] { $"Cannot be more than {MaxValue}" };
                 }
                 else
                     return new string[] { };
