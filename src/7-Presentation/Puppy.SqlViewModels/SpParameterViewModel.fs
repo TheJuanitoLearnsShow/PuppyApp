@@ -7,15 +7,17 @@ open System.Collections.Generic
 
 type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string) =
     let ev = new Event<_,_>()
-    let _errorsByPropertyName = new Dictionary<string, List<string>>();
+    let evErr = new Event<_,_>()
+    let mutable _errors = Seq.empty;
     let puppyInfo = spParamHelper.PuppyInfo
     let mutable _isRequired = puppyInfo.Required
     let mutable _label = spParamHelper.FriendlyName
     let mutable _value = initialValue
-    
 
     let validateValue =
         StoredProcProcessor.ValidateSpParam spParamHelper 
+
+    member val NetNature = puppyInfo.Nature
 
     member x.IsRequired  
         with get () = _isRequired
@@ -37,11 +39,12 @@ type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string) =
             if (_value <> value) then
                 _value <- value
                 ev.Trigger(x, PropertyChangedEventArgs("Value"))
-                _errorsByPropertyName.Clear
                 match validateValue _value with
                 | Error e -> 
-                    _errorsByPropertyName.[]
-                | _ -> None
+                    _errors <- e.ErrorMessage
+                | _ -> 
+                    _errors <- Seq.empty
+                evErr.Trigger(x, DataErrorsChangedEventArgs("Value"))
 
     interface INotifyPropertyChanged with
         [<CLIEvent>]
@@ -50,11 +53,9 @@ type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string) =
     interface INotifyDataErrorInfo with
         [<CLIEvent>]
         member this.ErrorsChanged: IEvent<System.EventHandler<DataErrorsChangedEventArgs>,DataErrorsChangedEventArgs> = 
-            raise (System.NotImplementedException())
+            evErr.Publish
         member this.HasErrors: bool = 
-            _errorsByPropertyName.Count > 0
-
+            _errors |> Seq.isEmpty |> not
         member x.GetErrors(propertyName:string) =
-            //get it from the sql module
-            Seq.empty
+            _errors
 

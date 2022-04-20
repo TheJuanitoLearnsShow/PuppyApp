@@ -24,24 +24,27 @@ module PossibleValuesFromSql =
         async {
             use cmd = new SqlCommand(paramsQry , con)
             cmd.CommandType <- CommandType.Text
-            let! dr = cmd.ExecuteReaderAsync() |> Async.AwaitTask;
+            try
+                let! dr = cmd.ExecuteReaderAsync() |> Async.AwaitTask;
             
-            let drSeq = dr |> SqlUtils.ConvertToDictionary
-            let infoes =  
-                drSeq 
-                |> Array.groupBy (fun r -> r.["UdfName"].ToString())
-                |> Array.map (
-                    fun (key, vals) -> {
-                        UdfName = key
-                        PossibleValues = 
-                            vals 
-                            |> Array.map (fun r -> toValuePair(r.["Value"] , r.["Label"]) )
-                            |> Array.toSeq
-                            |> PossibleValues
-                    }
-                ) 
-            dr.Close()
-            return infoes
+                let drSeq = dr |> SqlUtils.ConvertToDictionary
+                let infoes =  
+                    drSeq 
+                    |> Array.groupBy (fun r -> r.["UdfName"].ToString())
+                    |> Array.map (
+                        fun (key, vals) -> {
+                            UdfName = key
+                            PossibleValues = 
+                                vals 
+                                |> Array.map (fun r -> toValuePair(r.["Value"] , r.["Label"]) )
+                                |> Array.toSeq
+                                |> PossibleValues
+                        }
+                    ) 
+                dr.Close()
+                return infoes
+            with exn ->
+                return Array.empty
         } 
     let mutable private cache = None
 

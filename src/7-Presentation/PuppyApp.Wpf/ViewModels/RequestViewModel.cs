@@ -1,5 +1,6 @@
 ﻿
 using MvvmGen;
+using Puppy.SqlViewModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -8,9 +9,9 @@ namespace PuppyApp.Wpf.ViewModels
     [ViewModel]
     internal partial class RequestViewModel
     {
-        public ObservableCollection<CallParameterViewModel> CallParameters { get; } = new ObservableCollection<CallParameterViewModel>();
+        public ObservableCollection<SpParameterViewModel> CallParameters { get; } = new ObservableCollection<SpParameterViewModel>();
 
-        public void LoadNewCallParameters(IEnumerable<CallParameterViewModel> newItems)
+        public void LoadNewCallParameters(IEnumerable<SpParameterViewModel> newItems)
         {
             foreach (var p in newItems)
             {
