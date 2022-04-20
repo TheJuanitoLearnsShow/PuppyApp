@@ -16,8 +16,10 @@ type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string) =
 
     let validateValue =
         StoredProcProcessor.ValidateSpParam spParamHelper 
-
+        
+    member x.IsValid = _errors |> Seq.isEmpty
     member val NetNature = puppyInfo.Nature
+    member val SpParamName = spParamHelper.SpParamName
 
     member x.IsRequired  
         with get () = _isRequired
@@ -38,12 +40,12 @@ type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string) =
         and set (value) = 
             if (_value <> value) then
                 _value <- value
-                ev.Trigger(x, PropertyChangedEventArgs("Value"))
                 match validateValue _value with
                 | Error e -> 
                     _errors <- e.ErrorMessage
                 | _ -> 
                     _errors <- Seq.empty
+                ev.Trigger(x, PropertyChangedEventArgs("Value"))
                 evErr.Trigger(x, DataErrorsChangedEventArgs("Value"))
 
     interface INotifyPropertyChanged with
