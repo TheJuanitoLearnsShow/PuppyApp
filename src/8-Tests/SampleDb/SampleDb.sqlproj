@@ -60,6 +60,8 @@
     <Folder Include="StoredProcs" />
     <Folder Include="Puppy" />
     <Folder Include="Puppy\Tables" />
+    <Folder Include="Puppy\StoredProcs" />
+    <Folder Include="UDFs" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Students.sql" />
@@ -67,8 +69,13 @@
     <Build Include="Tables\Grade Levels.sql" />
     <Build Include="Puppy\puppy.sql" />
     <Build Include="Puppy\Tables\LookupValueConstraints.sql" />
+    <Build Include="Puppy\StoredProcs\spSetLookups.sql" />
+    <Build Include="UDFs\Types.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SampleDb.publish-local.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment.sql" />
   </ItemGroup>
 </Project>

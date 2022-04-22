@@ -5,11 +5,17 @@ open PuppyData.SqlMapper
 open PuppyData.Types
 open System.Collections.Generic
 
-type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string) =
+type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string, connStr: string) =
     let ev = new Event<_,_>()
     let evErr = new Event<_,_>()
     let mutable _errors = Seq.empty;
     let puppyInfo = spParamHelper.PuppyInfo
+    let _lookup = 
+        match puppyInfo.LookupInfo with
+        | Some (LkupInfo l) ->
+            LookupParameterViewModel(l, connStr) |> Some
+        | _ ->
+            None
     let mutable _isRequired = puppyInfo.Required
     let mutable _label = spParamHelper.FriendlyName
     let mutable _value = initialValue
@@ -20,6 +26,14 @@ type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string) =
     member x.IsValid = _errors |> Seq.isEmpty
     member val NetNature = puppyInfo.Nature
     member val SpParamName = spParamHelper.SpParamName
+
+    member x.HasLookup 
+        with get() =
+            _lookup |> Option.isSome
+
+    member x.Lookup 
+        with get() =
+            _lookup.Value
 
     member x.IsRequired  
         with get () = _isRequired

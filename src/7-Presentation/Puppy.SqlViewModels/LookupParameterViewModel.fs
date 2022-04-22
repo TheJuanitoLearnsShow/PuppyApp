@@ -15,19 +15,28 @@ type LookupParameterViewModel(lkpInfo: LookupInfo, connStr: string) =
     let mutable _searchQuery = ""
     let mutable _label = ""
     let mutable _value = ""
+    let mutable _showResults = false
     let execLookupSql = StoredProcProcessor.ExecuteLookupSql connStr lkpInfo
     
     let _searchResults = new ObservableCollection<_>()
-    let UpdateSearchResult() = 
+    member x.UpdateSearchResult() = 
         task {
             let! rows = execLookupSql _searchQuery
             _searchResults.Clear()
             for r in rows do
                 _searchResults.Add(r)
+            x.ShowResults <- true
         }
+
     member x.IsValid = _errors |> Seq.isEmpty
     member val SearchResults = _searchResults with get, set
     
+    member x.ShowResults  
+        with get () = _showResults
+        and set (value) = 
+            if (_showResults <> value) then
+                _showResults <- value
+                ev.Trigger(x, PropertyChangedEventArgs("ShowResults"))
 
     member x.SearchQuery  
         with get () = _searchQuery
@@ -35,7 +44,7 @@ type LookupParameterViewModel(lkpInfo: LookupInfo, connStr: string) =
             if (_searchQuery <> value) then
                 _searchQuery <- value
                 ev.Trigger(x, PropertyChangedEventArgs("SearchQuery"))
-                UpdateSearchResult().Start()
+                x.UpdateSearchResult() |> Task.s
                 
     member x.Label  
         with get () = _label

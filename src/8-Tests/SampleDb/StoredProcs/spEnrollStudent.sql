@@ -3,7 +3,7 @@
            ,@LastName varchar(50)
            ,@Age int
            ,@EnrolledOn datetime
-           ,@GradeLevel int
+           ,@GradeLevel [GradeLevel]
 AS
 
 

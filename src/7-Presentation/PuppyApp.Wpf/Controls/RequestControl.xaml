@@ -33,6 +33,38 @@
                 <DatePicker Grid.Column="1" SelectedDate="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="{Binding Label}"></DatePicker>
             </Grid>
         </DataTemplate>
+
+        <DataTemplate x:Key="Lookup.Template">
+            <Grid Margin="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                    <ColumnDefinition Width="8*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="0" Text="{Binding Label}" HorizontalAlignment="Right" Margin="8" VerticalAlignment="Center"></TextBlock>
+
+                <TextBox Grid.Column="1" Name="SearchQueryTxt" Text="{Binding Lookup.SearchQuery, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="{Binding Label}"></TextBox>
+                <Popup Grid.Column="1" Grid.Row="1" IsOpen="{Binding Lookup.ShowResults}"    
+                                 PlacementTarget = "{Binding ElementName = SearchQueryTxt}"
+                                 AllowsTransparency = "True" PopupAnimation = "Slide">
+
+                    <StackPanel>
+                        <ListBox ItemsSource="{Binding Lookup.SearchResults}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Label}"></TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+
+                </Popup>
+            </Grid>
+        </DataTemplate>
+        
     </UserControl.Resources>
     <StackPanel>
 

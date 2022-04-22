@@ -37,7 +37,7 @@ namespace PuppyApp.Wpf
             conn.Open();
             var spParams = PuppyData.SqlMapper.StoredProcProcessor.GetParamHelpersAsTask(conn, "spEnrollStudent").Result;
             var request = new RequestViewModel(connStr, "spEnrollStudent");
-            request.LoadNewCallParameters(spParams.Select(p => new Puppy.SqlViewModels.SpParameterViewModel(p, string.Empty)));
+            request.LoadNewCallParameters(spParams.Select(p => new Puppy.SqlViewModels.SpParameterViewModel(p, string.Empty, connStr)));
             DataContext = request;
             //request.ContinueWith(InitializeRequestDisplay);
         }

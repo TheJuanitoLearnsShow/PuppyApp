@@ -18,6 +18,8 @@ namespace PuppyApp.Wpf.Templates
             if (element != null && item != null && item is SpParameterViewModel)
             {
                 var spParam = (SpParameterViewModel)item;
+                if (spParam.HasLookup)
+                    return (DataTemplate)element.TryFindResource("Lookup.Template");
                 var template = (DataTemplate)element.TryFindResource($"{spParam.NetNature}.Template");
                 return template ?? (DataTemplate)element.FindResource($"{typeof(System.String).Name}.Template");
             }
