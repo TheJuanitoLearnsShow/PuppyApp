@@ -62,6 +62,7 @@
   <ItemGroup>
     <Build Include="Tables\Students.sql" />
     <Build Include="StoredProcs\spEnrollStudent.sql" />
+    <Build Include="Tables\Grade Levels.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SampleDb.publish-local.xml" />

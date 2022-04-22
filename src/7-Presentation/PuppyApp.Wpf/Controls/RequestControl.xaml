@@ -30,7 +30,7 @@
                     <ColumnDefinition Width="8*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="{Binding Label}" HorizontalAlignment="Right" Margin="8" VerticalAlignment="Center"></TextBlock>
-                <DatePicker Grid.Column="1" SelectedDate="{Binding Value, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="{Binding Label}"></DatePicker>
+                <DatePicker Grid.Column="1" SelectedDate="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="{Binding Label}"></DatePicker>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
