@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="LookupParameterViewModel.fs" />
     <Compile Include="SpParameterViewModel.fs" />
   </ItemGroup>
 

@@ -52,6 +52,42 @@ module SqlUtils =
         
         let rows = rows.ToArray()
         (columns, rows)
+        
+    let ExecSpReaderAsTask (conStr:string) (spName:string) (spParams:(string * Object) seq ) (mapLogic: IDataReader -> 'T) = 
+        task {
+            let rows = new LinkedList<'T>();
+            use conn = new SqlConnection(conStr)
+            do! conn.OpenAsync()
+            use cmd = new SqlCommand(spName , conn)
+            cmd.CommandType <- CommandType.StoredProcedure
+            for (pName, pVal) in spParams do
+                cmd.Parameters.AddWithValue(pName, pVal) |> ignore
+            let! dr = cmd.ExecuteReaderAsync()
+            while (dr.Read()) do
+                let newRow = mapLogic dr
+                rows.AddLast(newRow) |> ignore
+            dr.Close()
+            conn.Close()
+            return rows
+        } 
+        
+    let ExecSqlTextReaderAsTask (conStr:string) (sqlQuery:string) (spParams:(string * Object) seq ) (mapLogic: IDataReader -> 'T) = 
+        task {
+            let rows = new LinkedList<'T>();
+            use conn = new SqlConnection(conStr)
+            do! conn.OpenAsync()
+            use cmd = new SqlCommand(sqlQuery , conn)
+            cmd.CommandType <- CommandType.Text
+            for (pName, pVal) in spParams do
+                cmd.Parameters.AddWithValue(pName, pVal) |> ignore
+            let! dr = cmd.ExecuteReaderAsync()
+            while (dr.Read()) do
+                let newRow = mapLogic dr
+                rows.AddLast(newRow) |> ignore
+            dr.Close()
+            conn.Close()
+            return rows
+        } 
 
     let ExecSpReader (conStr:string) (spName:string) (spParams:(string * Object) seq ) (mapLogic: IDataReader -> 'T) = 
         async {

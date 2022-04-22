@@ -26,5 +26,9 @@
     <ProjectReference Include="..\..\1-Core\PuppyData.Types\PuppyData.Types.fsproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="6.0.3" />
+  </ItemGroup>
+
 
 </Project>

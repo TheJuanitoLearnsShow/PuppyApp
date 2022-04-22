@@ -1,5 +1,7 @@
 ﻿namespace PuppyData.SqlMapper
 
+open System.Data.SqlClient
+
 module StoredProcProcessor =
 
     open System.Collections.Concurrent
@@ -132,6 +134,9 @@ module StoredProcProcessor =
             ErrorData 
         else
             ResultsData 
+    
+    
+
     let private runSp (cmd: SqlCommand) =
         async {
                 try
@@ -187,6 +192,20 @@ module StoredProcProcessor =
                 }
                 
 
+        }
+
+    let ExecuteLookupSql (conStr:string) (lkpInfo: LookupInfo) (queryString:string) =
+        task {
+            let mapRow (dr:IDataReader) =
+                {Value = dr.[lkpInfo.IdColumnName].ToString(); Label = dr.[lkpInfo.LabelColumnName].ToString() }
+            if lkpInfo.IsStoredProc then
+                let! rows = SqlUtils.ExecSpReaderAsTask conStr lkpInfo.ObjectForSearch [( "@" + lkpInfo.SearchParameterName, queryString)] mapRow
+                return rows
+            else
+                //todo sanitize coluimn mames
+                let sqlQry = $"SELECT [{lkpInfo.IdColumnName}], [{lkpInfo.LabelColumnName}] from [{lkpInfo.ObjectForSearch}] where [{lkpInfo.SearchParameterName}] " + "like '%' + @QueryString + '%'"
+                let! rows = SqlUtils.ExecSqlTextReaderAsTask conStr lkpInfo.ObjectForSearch [( "@QueryString", queryString)] mapRow
+                return rows
         }
         
     
