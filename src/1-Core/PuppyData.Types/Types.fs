@@ -28,11 +28,12 @@ type ValidValueRanges = {
 type ValueLabelPair = {Value:string; Label:string}
 
 
+
 [<CLIMutable>]
-type SpLookupInfo = {SpForSearch:string; SpForValidation:string}
+type LookupInfo = {ObjectForSearch:string; SearchParameterName:string; IdColumnName:string; LabelColumnName:string; IsStoredProc:bool}
 
 type LookUpInfo =
-    | LkupProcInfo of SpLookupInfo
+    | LkupInfo of LookupInfo
     | PossibleValues of ValueLabelPair seq
     
 [<CLIMutable>]

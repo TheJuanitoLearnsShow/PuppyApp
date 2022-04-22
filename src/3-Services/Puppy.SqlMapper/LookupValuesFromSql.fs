@@ -9,14 +9,12 @@ module LookupValuesFromSql =
     open Puppy.SqlMapper
     
     let private paramsQry = "
-    SELECT UdfName, [SpForSearch], [SpForValidation]
-	from Puppy.[LookupValueConstraints]
+    SELECT UdfName, [ObjectForSearch], [SearchParameterName], [IdColumnName], [LabelColumnName], [IsStoredProc]
+	from puppy.[LookupValueConstraints]
     "
     let inline (>?) a b =
         if isNull(a) then b else a.ToString()
-    let private toValuePair (searchSp:string, validationSp: string) =
-         LkupProcInfo {SpForSearch = searchSp; SpForValidation = validationSp} 
-
+    
     let private getPossibleLookupsInfo (con) =
         async {
             use cmd = new SqlCommand(paramsQry , con)
@@ -34,7 +32,14 @@ module LookupValuesFromSql =
                             PossibleValues = 
                                 vals 
                                 |> Array.head
-                                |> (fun r ->  toValuePair(r.GetString("SpForSearch") , r.GetString("SpForValidation")) )
+                                |> (fun r ->  
+                                 LkupInfo { 
+                                    ObjectForSearch = r.["ObjectForSearch"].ToString()
+                                    SearchParameterName= r.["SearchParameterName"].ToString()
+                                    IdColumnName= r.["IdColumnName"].ToString()
+                                    LabelColumnName= r.["LabelColumnName"].ToString()
+                                    IsStoredProc= (r.["IsStoredProc"] = true)
+                                })
                         }
                     ) 
                 dr.Close()

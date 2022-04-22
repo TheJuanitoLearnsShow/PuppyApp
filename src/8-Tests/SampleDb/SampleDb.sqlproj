@@ -58,11 +58,15 @@
     <Folder Include="Properties" />
     <Folder Include="Tables" />
     <Folder Include="StoredProcs" />
+    <Folder Include="Puppy" />
+    <Folder Include="Puppy\Tables" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Students.sql" />
     <Build Include="StoredProcs\spEnrollStudent.sql" />
     <Build Include="Tables\Grade Levels.sql" />
+    <Build Include="Puppy\puppy.sql" />
+    <Build Include="Puppy\Tables\LookupValueConstraints.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SampleDb.publish-local.xml" />
