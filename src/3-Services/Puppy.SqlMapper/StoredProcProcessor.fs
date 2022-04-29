@@ -202,9 +202,9 @@ module StoredProcProcessor =
                 let! rows = SqlUtils.ExecSpReaderAsTask conStr lkpInfo.ObjectForSearch [( "@" + lkpInfo.SearchParameterName, queryString)] mapRow
                 return rows
             else
-                //todo sanitize coluimn mames
+                //todo sanitize coluimn names
                 let sqlQry = $"SELECT [{lkpInfo.IdColumnName}], [{lkpInfo.LabelColumnName}] from [{lkpInfo.ObjectForSearch}] where [{lkpInfo.SearchParameterName}] " + "like '%' + @QueryString + '%'"
-                let! rows = SqlUtils.ExecSqlTextReaderAsTask conStr lkpInfo.ObjectForSearch [( "@QueryString", queryString)] mapRow
+                let! rows = SqlUtils.ExecSqlTextReaderAsTask conStr sqlQry [( "@QueryString", queryString)] mapRow
                 return rows
         }
         

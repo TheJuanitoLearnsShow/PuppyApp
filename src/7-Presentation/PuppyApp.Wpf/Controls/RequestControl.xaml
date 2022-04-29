@@ -46,20 +46,60 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Column="0" Text="{Binding Label}" HorizontalAlignment="Right" Margin="8" VerticalAlignment="Center"></TextBlock>
 
-                <TextBox Grid.Column="1" Name="SearchQueryTxt" Text="{Binding Lookup.SearchQuery, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="{Binding Label}"></TextBox>
+                <!--<ComboBox Grid.Column="1" ItemsSource="{Binding Lookup.SearchResults}"
+                          IsEditable="True"
+                          SelectedValue="{Binding Value, Mode=OneWayToSource}"
+                          Text="{Binding Lookup.SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedValuePath="Value"
+                          materialDesign:HintAssist.Hint="{Binding Label}">
+                    
+                </ComboBox>-->
+                <!--<StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch">
+                    <ListBox ItemsSource="{Binding Lookup.SearchResults}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Label}"></TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>-->
+                <Button Grid.Column="1" Padding="4" Margin="16"
+                        Command="{Binding ExecuteCommand}" Content="{Binding Lookup.Value.Label}"></Button>
+                <!--<materialDesign:Card Grid.Column="1" Padding="4" Margin="16">
+                    <TextBlock Text="{Binding Lookup.Value.Label}"></TextBlock>
+                    
+                </materialDesign:Card>-->
                 <Popup Grid.Column="1" Grid.Row="1" IsOpen="{Binding Lookup.ShowResults}"    
                                  PlacementTarget = "{Binding ElementName = SearchQueryTxt}"
-                                 AllowsTransparency = "True" PopupAnimation = "Slide">
+                       Placement="Bottom" 
+                                 AllowsTransparency = "True" PopupAnimation = "Slide"
+                       HorizontalAlignment="Stretch" >
+                    <Grid>
+                        <Grid.RowDefinitions >
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="4*"/>
 
-                    <StackPanel>
-                        <ListBox ItemsSource="{Binding Lookup.SearchResults}">
+                        </Grid.RowDefinitions>
+                        <TextBox Grid.Row="0" Name="SearchQueryTxt" Text="{Binding Lookup.SearchQuery, UpdateSourceTrigger=PropertyChanged}" 
+                         materialDesign:HintAssist.Hint="{Binding Label}"></TextBox>
+
+
+                        <ListBox Grid.Row="1" HorizontalAlignment="Stretch"
+                                 ItemsSource="{Binding Lookup.SearchResults}" 
+                                 SelectedValuePath="Value"
+                                 SelectedValue="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                                 >
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Label}"></TextBlock>
+                                    <materialDesign:Card Padding="32" Margin="16">
+                                        <TextBlock Text="{Binding Label}"></TextBlock>
+                                    </materialDesign:Card>
+
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
-                    </StackPanel>
+                    </Grid>
+
 
                 </Popup>
             </Grid>

@@ -6,31 +6,59 @@ open PuppyData.Types
 open System.Collections.Generic
 open System.Threading.Tasks
 open System.Collections.ObjectModel
+open FSharp.Control.Reactive
+open System.Reactive.Concurrency
+open System
+open System.Threading
+open System.Reflection.Emit
+open System.Windows.Input
 
-type LookupParameterViewModel(lkpInfo: LookupInfo, connStr: string) =
+type SearchCommand () = 
+    let canExecuteChanged = new Event<_>()
+    interface ICommand with
+        member this.CanExecute (obj) = true
+        member this.Execute (obj) = reload_tests()
+        [<CLIEvent>]
+        member this.CanExecuteChanged = canExecuteChanged.Publish
+
+
+type LookupParameterViewModel(lkpInfo: LookupInfo, connStr: string, valueSelectedFunc: string->unit) as this =
     let ev = new Event<_,_>()
     let evErr = new Event<_,_>()
     let mutable _errors = Seq.empty;
 
     let mutable _searchQuery = ""
     let mutable _label = ""
-    let mutable _value = ""
+    let mutable _value = { Value =""; Label =""}
     let mutable _showResults = false
     let execLookupSql = StoredProcProcessor.ExecuteLookupSql connStr lkpInfo
     
     let _searchResults = new ObservableCollection<_>()
-    member x.UpdateSearchResult() = 
+
+    let updateSearchResult(searchQuery) = 
         task {
-            let! rows = execLookupSql _searchQuery
-            _searchResults.Clear()
-            for r in rows do
-                _searchResults.Add(r)
-            x.ShowResults <- true
+            let! rows = execLookupSql searchQuery
+            return rows
         }
+    
+    let results = ev.Publish  |> Observable.throttle (TimeSpan.FromSeconds(0.5)) 
+                            |> Observable.filter (fun (evt:PropertyChangedEventArgs) -> evt.PropertyName = "SearchQuery")
+                            |> Observable.flatmapTask (fun (evt:PropertyChangedEventArgs) -> updateSearchResult(_searchQuery))
+                            |> Observable.observeOnContext(SynchronizationContext.Current)
+
+    do
+        results |> Observable.subscribe( fun rows -> this.UpdateSearchResult(rows) ) |> ignore
+
+    member x.UpdateSearchResult(rows) = 
+        _searchResults.Clear()
+        for r in rows do
+            _searchResults.Add(r)
+        x.ShowResults <- true
 
     member x.IsValid = _errors |> Seq.isEmpty
     member val SearchResults = _searchResults with get, set
     
+
     member x.ShowResults  
         with get () = _showResults
         and set (value) = 
@@ -44,7 +72,7 @@ type LookupParameterViewModel(lkpInfo: LookupInfo, connStr: string) =
             if (_searchQuery <> value) then
                 _searchQuery <- value
                 ev.Trigger(x, PropertyChangedEventArgs("SearchQuery"))
-                x.UpdateSearchResult() |> Task.s
+                
                 
     member x.Label  
         with get () = _label
@@ -59,6 +87,8 @@ type LookupParameterViewModel(lkpInfo: LookupInfo, connStr: string) =
             if (_value <> value) then
                 _value <- value
                 ev.Trigger(x, PropertyChangedEventArgs("Value"))
+                valueSelectedFunc(_value.Value)
+                
 
     interface INotifyPropertyChanged with
         [<CLIEvent>]

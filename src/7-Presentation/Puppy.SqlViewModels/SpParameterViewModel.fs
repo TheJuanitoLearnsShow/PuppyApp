@@ -4,8 +4,11 @@ open System.ComponentModel
 open PuppyData.SqlMapper
 open PuppyData.Types
 open System.Collections.Generic
+open FSharp.Control.Reactive
+open System.Reactive
+open System
 
-type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string, connStr: string) =
+type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string, connStr: string) as this=
     let ev = new Event<_,_>()
     let evErr = new Event<_,_>()
     let mutable _errors = Seq.empty;
@@ -13,12 +16,14 @@ type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string, conn
     let _lookup = 
         match puppyInfo.LookupInfo with
         | Some (LkupInfo l) ->
-            LookupParameterViewModel(l, connStr) |> Some
+            let vmLkp = LookupParameterViewModel(l, connStr, this.Value)
+            vmLkp |> Some
         | _ ->
             None
     let mutable _isRequired = puppyInfo.Required
     let mutable _label = spParamHelper.FriendlyName
     let mutable _value = initialValue
+
 
     let validateValue =
         StoredProcProcessor.ValidateSpParam spParamHelper 
@@ -61,6 +66,12 @@ type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string, conn
                     _errors <- Seq.empty
                 ev.Trigger(x, PropertyChangedEventArgs("Value"))
                 evErr.Trigger(x, DataErrorsChangedEventArgs("Value"))
+                match _lookup with
+                | Some l ->
+                    l.ShowResults <- false
+                | _ ->
+                    ()
+
 
     interface INotifyPropertyChanged with
         [<CLIEvent>]
