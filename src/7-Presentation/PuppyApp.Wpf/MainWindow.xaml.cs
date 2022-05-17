@@ -29,17 +29,13 @@ namespace PuppyApp.Wpf
         {
             InitializeComponent();
 
-            //var spInfo = new SqlInputAsJsonProcessor();
-            var connStr = @"Data Source=.\sqlexpress;Database=SampleDb;Integrated Security=True;Pooling=False;MultipleActiveResultSets=True;Connect Timeout=60;";
-            //var sampleJsonSchema = spInfo.GetJsonSchemaForStoredProc(connStr, "spEnrollStudent").Result; //File.ReadAllText("Samples\\SampleJSonSchema.json");
-            //var request = OpenApiToRequestViewModelMapper.MapToRequest(sampleJsonSchema).Result;
-            using var conn = new SqlConnection(connStr);
-            conn.Open();
-            var spParams = PuppyData.SqlMapper.StoredProcProcessor.GetParamHelpersAsTask(conn, "spEnrollStudent").Result;
-            var request = new RequestViewModel(connStr, "spEnrollStudent");
-            request.LoadNewCallParameters(spParams.Select(p => new Puppy.SqlViewModels.SpParameterViewModel(p, string.Empty, connStr)));
-            DataContext = request;
-            //request.ContinueWith(InitializeRequestDisplay);
+            //var connStr = @"Data Source=.\sqlexpress;Database=SampleDb;Integrated Security=True;Pooling=False;MultipleActiveResultSets=True;Connect Timeout=60;";
+            //using var conn = new SqlConnection(connStr);
+            //conn.Open();
+            //var spParams = PuppyData.SqlMapper.StoredProcProcessor.GetParamHelpersAsTask(conn, "spEnrollStudent").Result;
+            //var request = new RequestViewModel(connStr, "spEnrollStudent");
+            //request.LoadNewCallParameters(spParams.Select(p => new Puppy.SqlViewModels.SpParameterViewModel(p, string.Empty, connStr)));
+            //DataContext = request;
         }
 
         private async Task InitializeRequestDisplay(Task<RequestViewModel> request)

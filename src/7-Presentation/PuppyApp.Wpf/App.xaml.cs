@@ -13,5 +13,16 @@ namespace PuppyApp.Wpf
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            this.Activated += StartElmish;
+        }
+
+        private void StartElmish(object sender, EventArgs e)
+        {
+            this.Activated -= StartElmish;
+            var connStr = @"Data Source=.\sqlexpress;Database=SampleDb;Integrated Security=True;Pooling=False;MultipleActiveResultSets=True;Connect Timeout=60;";
+            SpRequestMvu.main(MainWindow, connStr);
+        }
     }
 }

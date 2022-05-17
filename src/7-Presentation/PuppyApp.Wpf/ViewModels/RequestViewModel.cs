@@ -1,6 +1,5 @@
 ﻿
 using MvvmGen;
-using Puppy.SqlViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -25,29 +24,29 @@ namespace PuppyApp.Wpf.ViewModels
             _connectionString = connectionString;
             _spName = spName;
             Results = new DataTable();
-            this.InitializeCommands();
+            //this.InitializeCommands();
             this.OnInitialize();
         }
 
-        public ObservableCollection<SpParameterViewModel> CallParameters { get; } = new ObservableCollection<SpParameterViewModel>();
+        //public ObservableCollection<SpParameterViewModel> CallParameters { get; } = new ObservableCollection<SpParameterViewModel>();
 
-        public void LoadNewCallParameters(IEnumerable<SpParameterViewModel> newItems)
-        {
-            foreach (var p in newItems)
-            {
-                (p as INotifyPropertyChanged).PropertyChanged += OnParameterChanged;
-                CallParameters.Add(p);
-            }
+        //public void LoadNewCallParameters(IEnumerable<SpParameterViewModel> newItems)
+        //{
+        //    foreach (var p in newItems)
+        //    {
+        //        (p as INotifyPropertyChanged).PropertyChanged += OnParameterChanged;
+        //        CallParameters.Add(p);
+        //    }
 
-            OnPropertyChanged("CallParameters");
-        }
+        //    OnPropertyChanged("CallParameters");
+        //}
 
         private void OnParameterChanged(object sender, PropertyChangedEventArgs e)
         {
-            ExecuteCommand.RaiseCanExecuteChanged();
+            //ExecuteCommand.RaiseCanExecuteChanged();
         }
 
-        [Command(CanExecuteMethod = nameof(CanExecute))]
+        //[Command(CanExecuteMethod = nameof(CanExecute))]
         private void Execute() {
             using SqlConnection connection = new SqlConnection(_connectionString);
 
@@ -55,10 +54,10 @@ namespace PuppyApp.Wpf.ViewModels
             {
                 CommandType = CommandType.StoredProcedure
             };
-            foreach(var p in CallParameters)
-            {
-                cmd.Parameters.AddWithValue(p.SpParamName, p.Value);
-            }
+            //foreach(var p in CallParameters)
+            //{
+            //    cmd.Parameters.AddWithValue(p.SpParamName, p.Value);
+            //}
             connection.Open();
             Results.Clear();
             using var adapter = new SqlDataAdapter(cmd);
@@ -67,11 +66,11 @@ namespace PuppyApp.Wpf.ViewModels
             }
         }
 
-        private bool CanExecute()
-        {
-            return CallParameters.All( 
-                p => p.IsValid
-                );
-        }
+        //private bool CanExecute()
+        //{
+        //    return CallParameters.All( 
+        //        p => p.IsValid
+        //        );
+        //}
     }
 }

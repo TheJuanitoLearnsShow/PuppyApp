@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31423.177
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuppyApp", "PuppyApp\PuppyApp.csproj", "{A8C34765-0AC5-4647-9B81-EDA667531AA1}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PuppySqlWrapper", "3-Services\PuppySqlWrapper\PuppySqlWrapper.csproj", "{6762C93F-08CB-4128-AEAC-2E2D45A5590E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PuppyTests", "8-Tests\PuppyTests\PuppyTests.csproj", "{4061E416-9D40-4815-9669-B5F01CD4C50E}"
@@ -25,7 +23,7 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "PuppyData.Types", "1-Core\P
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Puppy.SqlMapper", "3-Services\Puppy.SqlMapper\Puppy.SqlMapper.fsproj", "{D9EF25C0-C82F-4738-85EB-1E5CE3AC0BE8}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Puppy.SqlViewModels", "7-Presentation\Puppy.SqlViewModels\Puppy.SqlViewModels.fsproj", "{0F16FBA0-C28D-4875-BB63-52AE832C0F4B}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Puppy.SqlViewModels", "7-Presentation\Puppy.SqlViewModels\Puppy.SqlViewModels.fsproj", "{0F16FBA0-C28D-4875-BB63-52AE832C0F4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,36 +39,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Debug|ARM.ActiveCfg = Debug|ARM
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Debug|ARM.Build.0 = Debug|ARM
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Debug|ARM.Deploy.0 = Debug|ARM
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Debug|ARM64.ActiveCfg = Debug|ARM64
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Debug|ARM64.Build.0 = Debug|ARM64
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Debug|ARM64.Deploy.0 = Debug|ARM64
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Debug|x64.ActiveCfg = Debug|x64
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Debug|x64.Build.0 = Debug|x64
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Debug|x64.Deploy.0 = Debug|x64
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Debug|x86.ActiveCfg = Debug|x86
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Debug|x86.Build.0 = Debug|x86
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Debug|x86.Deploy.0 = Debug|x86
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Release|ARM.ActiveCfg = Release|ARM
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Release|ARM.Build.0 = Release|ARM
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Release|ARM.Deploy.0 = Release|ARM
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Release|ARM64.ActiveCfg = Release|ARM64
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Release|ARM64.Build.0 = Release|ARM64
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Release|ARM64.Deploy.0 = Release|ARM64
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Release|x64.ActiveCfg = Release|x64
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Release|x64.Build.0 = Release|x64
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Release|x64.Deploy.0 = Release|x64
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Release|x86.ActiveCfg = Release|x86
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Release|x86.Build.0 = Release|x86
-		{A8C34765-0AC5-4647-9B81-EDA667531AA1}.Release|x86.Deploy.0 = Release|x86
 		{6762C93F-08CB-4128-AEAC-2E2D45A5590E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6762C93F-08CB-4128-AEAC-2E2D45A5590E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6762C93F-08CB-4128-AEAC-2E2D45A5590E}.Debug|ARM.ActiveCfg = Debug|Any CPU

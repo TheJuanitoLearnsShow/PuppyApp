@@ -1,5 +1,4 @@
-﻿using Puppy.SqlViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,15 +14,15 @@ namespace PuppyApp.Wpf.Templates
          DependencyObject container)
         {
             FrameworkElement element = container as FrameworkElement;
-            if (element != null && item != null && item is SpParameterViewModel)
-            {
-                var spParam = (SpParameterViewModel)item;
-                if (spParam.HasLookup)
-                    return (DataTemplate)element.TryFindResource("Lookup.Template");
-                var template = (DataTemplate)element.TryFindResource($"{spParam.NetNature}.Template");
-                return template ?? (DataTemplate)element.FindResource($"{typeof(System.String).Name}.Template");
-            }
-            return null;
+            //if (element != null && item != null && item is SpParameterViewModel)
+            //{
+            //    var spParam = (SpParameterViewModel)item;
+            //    if (spParam.HasLookup)
+            //        return (DataTemplate)element.TryFindResource("Lookup.Template");
+            //    var template = (DataTemplate)element.TryFindResource($"{spParam.NetNature}.Template");
+            //    return template ?? (DataTemplate)element.FindResource($"{typeof(System.String).Name}.Template");
+            //}
+            return (DataTemplate)element.FindResource($"{typeof(System.String).Name}.Template");
         }
     }
 }

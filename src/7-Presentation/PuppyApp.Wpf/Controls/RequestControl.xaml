@@ -108,7 +108,7 @@
     </UserControl.Resources>
     <StackPanel>
 
-        <ItemsControl Name="icTodoList" ItemsSource="{Binding CallParameters}" ItemTemplateSelector="{StaticResource ParameterControlSelector}">
+        <ItemsControl Name="spCallParameters" ItemsSource="{Binding CallParameters}" ItemTemplateSelector="{StaticResource ParameterControlSelector}">
             
         </ItemsControl>
         <Button Command="{Binding ExecuteCommand}">Execute</Button>
