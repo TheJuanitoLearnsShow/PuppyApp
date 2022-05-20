@@ -44,11 +44,18 @@ let validateValue (_,m:SpParamMvu.Model) =
         List.empty
 
 let paramBindings () : Binding<Model * SpParamMvu.Model, Msg> list = [
-  "Value"
-    |> Binding.twoWay((fun (_,m:SpParamMvu.Model) -> m.Value), (fun v (n,m:SpParamMvu.Model) -> NewValue (m.SpParamHelper.SpParamName, v) ) )
-    |> Binding.addValidation(validateValue)
-  "Label"
-    |> Binding.oneWay (fun (_,m:SpParamMvu.Model) -> m.Label )
+    "Value"
+        |> Binding.twoWay((fun (_,m:SpParamMvu.Model) -> m.Value), (fun v (n,m:SpParamMvu.Model) -> NewValue (m.SpParamHelper.SpParamName, v) ) )
+        |> Binding.addValidation(validateValue)
+    "Label"
+        |> Binding.oneWay (fun (_,m:SpParamMvu.Model) -> m.Label )
+    "HasLookup"
+        |> Binding.oneWay (fun (_,m:SpParamMvu.Model) -> 
+            match m.SpParamHelper.PuppyInfo.LookupInfo with 
+            | Some (LkupInfo l) -> true
+            | _ -> false )
+    "NetNature"
+        |> Binding.oneWay (fun (_,m:SpParamMvu.Model) -> m.SpParamHelper.PuppyInfo.Nature )
     ]
 
 let bindings () : Binding<Model, Msg> list = [

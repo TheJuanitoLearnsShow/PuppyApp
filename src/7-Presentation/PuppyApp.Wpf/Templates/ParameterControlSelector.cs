@@ -16,11 +16,16 @@ namespace PuppyApp.Wpf.Templates
             FrameworkElement element = container as FrameworkElement;
             if (element != null && item != null)
             {
-                var spParam = (Elmish.WPF.ViewModel<System.Tuple<SpRequestMvu.Model, SpParamMvu.Model>, SpRequestMvu.Msg>) item;
-                //    if (spParam.HasLookup)
-                //        return (DataTemplate)element.TryFindResource("Lookup.Template");
-                //    var template = (DataTemplate)element.TryFindResource($"{spParam.NetNature}.Template");
-                //    return template ?? (DataTemplate)element.FindResource($"{typeof(System.String).Name}.Template");
+                var itemTypeName = item.GetType().FullName;
+                if (itemTypeName != null &&
+                    !itemTypeName.StartsWith("Elmish.WPF.ViewModel`2[[System.Tuple`2[[SpRequestMvu+Model, Puppy.SqlViewModels"))
+                    return (DataTemplate)element.FindResource($"{typeof(System.String).Name}.Template");
+                dynamic spParam = item;
+                if (spParam.HasLookup)
+                    return (DataTemplate)element.TryFindResource("Lookup.Template");
+                var template = (DataTemplate)element.TryFindResource($"{spParam.NetNature}.Template");
+                return template ?? (DataTemplate)element.FindResource($"{typeof(System.String).Name}.Template");
+                //    
             }
             return (DataTemplate)element.FindResource($"{typeof(System.String).Name}.Template");
         }
