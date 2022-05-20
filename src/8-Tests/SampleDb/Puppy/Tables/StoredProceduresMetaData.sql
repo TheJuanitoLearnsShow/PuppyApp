@@ -22,5 +22,6 @@
 	[Heading4] varchar(150) not null,
 	[ActionType4] varchar(50) not null,
 	[ActionURITemplate4] varchar(255) not null,
-	[ActionDataTemplate4] varchar(512) not null,
+	[ActionDataTemplate4] varchar(512) not null, 
+    CONSTRAINT [CK_StoredProceduresMetaData_ActionType1] CHECK (ActionType1 in ('UriCmdPerRow', 'NavigateToUri', '')),
 )

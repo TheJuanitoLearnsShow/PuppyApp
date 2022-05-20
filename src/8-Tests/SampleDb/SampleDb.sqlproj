@@ -72,6 +72,7 @@
     <Build Include="Puppy\StoredProcs\spSetLookups.sql" />
     <Build Include="UDFs\Types.sql" />
     <Build Include="Puppy\Tables\StoredProceduresMetaData.sql" />
+    <Build Include="Puppy\StoredProcs\spSetSpMetadata.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SampleDb.publish-local.xml" />

@@ -10,4 +10,5 @@ Post-Deployment Script Template
 --------------------------------------------------------------------------------------
 */
 exec puppy.[spSetLookups]
+exec puppy.[spSetSpMetadata]
 go
