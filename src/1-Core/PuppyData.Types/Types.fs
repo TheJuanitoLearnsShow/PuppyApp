@@ -89,3 +89,13 @@ type ParamHelper =
         PuppyInfo: PuppySqlTypeInfo
     }
 with member x.SimpleName() = x.SpParamName.[1..]
+
+
+[<CLIMutable>]
+type SpResultsMetada = {
+    SpName: string
+    Headings: string[]
+    ActionTypes: string[]
+    ActionURITemplates: string[]
+    ActionDataTemplates: string[]
+}

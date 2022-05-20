@@ -71,6 +71,7 @@
     <Build Include="Puppy\Tables\LookupValueConstraints.sql" />
     <Build Include="Puppy\StoredProcs\spSetLookups.sql" />
     <Build Include="UDFs\Types.sql" />
+    <Build Include="Puppy\Tables\StoredProceduresMetaData.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SampleDb.publish-local.xml" />
