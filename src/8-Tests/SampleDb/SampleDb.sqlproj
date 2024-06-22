@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="SampleDb.publish-local.xml" />
+    <None Include="SampleDb-local.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />

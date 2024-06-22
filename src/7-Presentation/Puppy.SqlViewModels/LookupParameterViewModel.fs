@@ -15,11 +15,11 @@ open System.Windows.Input
 
 type SearchCommand () = 
     let canExecuteChanged = new Event<_>()
-    interface ICommand with
-        member this.CanExecute (obj) = true
-        member this.Execute (obj) = reload_tests()
-        [<CLIEvent>]
-        member this.CanExecuteChanged = canExecuteChanged.Publish
+    // interface ICommand with
+    //     member this.CanExecute (obj) = true
+    //     // member this.Execute (obj) = reload_tests()
+    //     [<CLIEvent>]
+    //     member this.CanExecuteChanged = true //canExecuteChanged.Publish
 
 
 type LookupParameterViewModel(lkpInfo: LookupInfo, connStr: string, valueSelectedFunc: string->unit) as this =

@@ -52,7 +52,31 @@ type PuppySqlTypeInfo = {
     Decimals: int
     Ranges: RangeType seq
     LookupInfo: LookUpInfo option
-}
+} with
+    static member CreateText (isRequired: bool) (maxLength: int) = {
+                Required = isRequired
+                Length = maxLength
+                Nature = typeof<string>.Name
+                Decimals = 0
+                Ranges = Seq.empty
+                LookupInfo = None
+            }
+    static member CreateInt (isRequired: bool) (maxLength: int) = {
+                Required = isRequired
+                Length = maxLength
+                Nature = typeof<int>.Name
+                Decimals = 0
+                Ranges = Seq.empty
+                LookupInfo = None
+            }
+    static member CreateDecimal (isRequired: bool) (maxLength: int) (decimals: int) = {
+                Required = isRequired
+                Length = maxLength
+                Nature = typeof<decimal>.Name
+                Decimals = decimals
+                Ranges = Seq.empty
+                LookupInfo = None
+            }
 
 [<CLIMutable>]
 type SpParamInfo = {

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "PuppyApp.WinUI3 (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "PuppyApp.WinUI3 (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

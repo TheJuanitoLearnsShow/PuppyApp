@@ -16,7 +16,7 @@ type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string, conn
     let _lookup = 
         match puppyInfo.LookupInfo with
         | Some (LkupInfo l) ->
-            let vmLkp = LookupParameterViewModel(l, connStr, this.Value)
+            let vmLkp = LookupParameterViewModel(l, connStr, fun (s) -> this.Value <- s)
             vmLkp |> Some
         | _ ->
             None
@@ -54,8 +54,8 @@ type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string, conn
                 _label <- value
                 ev.Trigger(x, PropertyChangedEventArgs("Label"))
                 
-    member x.Value  
-        with get () = _value
+    member x.Value 
+        with get () : string  = _value
         and set (value) = 
             if (_value <> value) then
                 _value <- value

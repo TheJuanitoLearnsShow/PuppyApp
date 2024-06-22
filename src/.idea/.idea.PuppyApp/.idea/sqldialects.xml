@@ -2,6 +2,15 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/3-Services/PuppySqlWrapper/SqlInputAsJsonProcessor.cs" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/8-Tests/SampleDb/Puppy/StoredProcs/spSetLookups.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/8-Tests/SampleDb/Puppy/StoredProcs/spSetSpMetadata.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/8-Tests/SampleDb/Puppy/Tables/LookupValueConstraints.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/8-Tests/SampleDb/Puppy/Tables/StoredProceduresMetaData.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/8-Tests/SampleDb/Puppy/puppy.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/8-Tests/SampleDb/StoredProcs/spEnrollStudent.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/8-Tests/SampleDb/Tables/Grade Levels.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/8-Tests/SampleDb/Tables/Students.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/8-Tests/SampleDb/UDFs/Types.sql" dialect="TSQL" />
     <file url="PROJECT" dialect="TSQL" />
   </component>
 </project>
