@@ -36,7 +36,7 @@ module Main =
         Component(fun ctx ->
             let vm = new Puppy.SqlViewModels.RequestFormViewModel(fieldDefinitions = testFieldDefinitions, initialValues = initialValues)
             let state = ctx.useState ( vm )
-            let draftFields = vm.Fields |> Seq.map (fun f -> f.) 
+            let draftFields = vm.Fields |> Seq.map (fun f -> f) 
             DockPanel.create [
                 DockPanel.children [
                     DockPanel.create [
