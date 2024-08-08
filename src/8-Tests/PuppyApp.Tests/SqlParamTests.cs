@@ -25,7 +25,7 @@ public class SqlParamTests
         {
             _testOutputHelper.WriteLine(paramType.ToString());
         }
-        
+
         Assert.True(paramsTypes.Count > 0);
         Assert.True(paramsTypes.Count(p => p.ClrTypeName == "String") == 2);
     }
