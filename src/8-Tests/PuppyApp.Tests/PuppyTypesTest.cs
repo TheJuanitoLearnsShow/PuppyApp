@@ -18,13 +18,15 @@ public class PuppyTypesTest
 
         var model = new ComplexPropertyDescriptor([
             new IntPropertyDescriptor("Age", 3, true ),
-            new IntPropertyDescriptor("Grade", 2, false )
+            new IntPropertyDescriptor("Grade", 2, false ),
+            new StringPropertyDescriptor("MiddleName", 3, true )
         ], "StudentEnrollment");
 
         var dataInput = new DataEntryInput();
         dataInput.ChildrenEntries = new () {
             {"Age", new DataEntryInput() { PrimitiveValue = "10"}},
             {"Grade", new DataEntryInput() { PrimitiveValue = "29999"}},
+            {"MiddleName", new DataEntryInput() { PrimitiveValue = "Abadacus"}},
         };
         var state = new DictDataEntryValuesState();
         var results = model.Parse(dataInput, state);
@@ -37,5 +39,9 @@ public class PuppyTypesTest
         Assert.Contains(ageResults, e => e.Description.StartsWith("Must not be greater"));
 
         Assert.Equal(10, state.GetInt("Age"));
+        
+        var middleNameResults = results.ChildrenEntries["MiddleName"].Errors;
+        Assert.NotEmpty(middleNameResults);
+        Assert.Contains(middleNameResults, e => e.Description.StartsWith("Length") && e.Code == ValidationErrorCode.ExceedsLength);
     }
 }

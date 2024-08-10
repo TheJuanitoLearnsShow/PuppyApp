@@ -1,16 +1,16 @@
 ﻿namespace Puppy.Types;
 
-public class IntPropertyDescriptor : IPrimitivePropertyDescriptor
+public class DecimalPropertyDescriptor : IPrimitivePropertyDescriptor
 {
     private readonly bool _isRequired;
-    private readonly int _maxValue;
-    private readonly int _minValue;
+    private readonly decimal _maxValue;
+    private readonly decimal _minValue;
 
-    public IntPropertyDescriptor(string propertyName, int numDigits, bool isRequired)
+    public DecimalPropertyDescriptor(string propertyName, int numDigits, bool isRequired)
     {
         Name = propertyName;
         _isRequired = isRequired;
-        _maxValue = (int) Math.Pow(10, numDigits);
+        _maxValue = (decimal) Math.Pow(10, numDigits);
         _minValue = -_maxValue;
     }
 
@@ -20,7 +20,7 @@ public class IntPropertyDescriptor : IPrimitivePropertyDescriptor
     {
         var inputText = input.PrimitiveValue;
         var isValid = true;
-        int? valueForOutput = 0;
+        decimal? valueForOutput = 0;
         PropertyError[] errors = [];
         if (string.IsNullOrEmpty(inputText))
         {
@@ -30,9 +30,9 @@ public class IntPropertyDescriptor : IPrimitivePropertyDescriptor
         if (_isRequired && inputText == null)
         {
             isValid = false;
-            errors = [PropertyError.IsRequired];
+            errors = [ PropertyError.IsRequired ];
         }
-        var isNumeric = int.TryParse(inputText, out var newValue);
+        var isNumeric = decimal.TryParse(inputText, out var newValue);
         if (isNumeric)
         {
             valueForOutput = newValue;
@@ -50,7 +50,7 @@ public class IntPropertyDescriptor : IPrimitivePropertyDescriptor
         else
         {
             isValid = false;
-            errors = [PropertyError.InvalidValue<int>()];
+            errors = [PropertyError.InvalidValue<decimal>()];
         }
 
         if (isValid)
