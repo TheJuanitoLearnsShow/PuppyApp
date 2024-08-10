@@ -36,6 +36,16 @@ public class DateTimeOffsetPropertyDescriptor : IPrimitivePropertyDescriptor
         if (isValidParsedValue)
         {
             valueForOutput = newValue;
+            if (newValue < _minValue)
+            {
+                isValid = false;
+                errors = [PropertyError.LessThanDate(_minValue)];
+            } 
+            else if (newValue > _maxValue)
+            {
+                isValid = false;
+                errors = [PropertyError.MoreThanDate(_maxValue)];
+            }
         }
         else
         {
