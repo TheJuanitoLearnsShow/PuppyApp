@@ -2,19 +2,36 @@
 
 public class DecimalPropertyDescriptor : IPrimitivePropertyDescriptor
 {
-    private readonly bool _isRequired;
-    private readonly decimal _maxValue;
-    private readonly decimal _minValue;
+    public bool IsRequired { get; }
 
-    public DecimalPropertyDescriptor(string propertyName, int numDigits, bool isRequired)
+    public decimal MaxValue { get; }
+
+    public decimal MinValue { get; }
+
+    public DecimalPropertyDescriptor(string propertyName, int numDigits, int decimalPlaces, bool isRequired)
     {
         Name = propertyName;
-        _isRequired = isRequired;
-        _maxValue = (decimal) Math.Pow(10, numDigits);
-        _minValue = -_maxValue;
+        NumDigits = numDigits;
+        IsRequired = isRequired;
+        DecimalPlaces = decimalPlaces;
+        MaxValue = (decimal) Math.Pow(10, numDigits);
+        MinValue = -MaxValue;
     }
-
+    public DecimalPropertyDescriptor(string propertyName, int numDigits, int decimalPlaces, bool isRequired, 
+        decimal minValue, decimal maxValue)
+    {
+        Name = propertyName;
+        NumDigits = numDigits;
+        IsRequired = isRequired;
+        DecimalPlaces = decimalPlaces;
+        MaxValue = maxValue;
+        MinValue = minValue;
+    }
+    
     public string Name { get; }
+    public int NumDigits { get; }
+
+    public int DecimalPlaces { get; }
 
     public DataEntryValidationResult Parse(DataEntryInput input, IDataEntryValuesState stateOutput)
     {
@@ -27,7 +44,7 @@ public class DecimalPropertyDescriptor : IPrimitivePropertyDescriptor
             valueForOutput = null;
         }
 
-        if (_isRequired && inputText == null)
+        if (IsRequired && inputText == null)
         {
             isValid = false;
             errors = [ PropertyError.IsRequired ];
@@ -36,15 +53,15 @@ public class DecimalPropertyDescriptor : IPrimitivePropertyDescriptor
         if (isNumeric)
         {
             valueForOutput = newValue;
-            if (newValue < _minValue)
+            if (newValue < MinValue)
             {
                 isValid = false;
-                errors = [PropertyError.LessThanMinValue(_minValue)];
+                errors = [PropertyError.LessThanMinValue(MinValue)];
             } 
-            else if (newValue > _maxValue)
+            else if (newValue > MaxValue)
             {
                 isValid = false;
-                errors = [PropertyError.MoreThanMaxValue(_maxValue)];
+                errors = [PropertyError.MoreThanMaxValue(MaxValue)];
             }
         }
         else

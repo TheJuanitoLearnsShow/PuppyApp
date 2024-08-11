@@ -2,16 +2,26 @@
 
 public class DateTimeOffsetPropertyDescriptor : IPrimitivePropertyDescriptor
 {
-    private readonly bool _isRequired;
-    private readonly DateTimeOffset _maxValue;
-    private readonly DateTimeOffset _minValue;
+    public bool IsRequired { get; }
+
+    public DateTimeOffset MaxValue { get; }
+
+    public DateTimeOffset MinValue { get; }
 
     public DateTimeOffsetPropertyDescriptor(string propertyName, bool isRequired)
     {
         Name = propertyName;
-        _isRequired = isRequired;
-        _maxValue = DateTimeOffset.MaxValue;
-        _minValue = DateTimeOffset.MinValue;
+        IsRequired = isRequired;
+        MaxValue = DateTimeOffset.MaxValue;
+        MinValue = DateTimeOffset.MinValue;
+    }
+    public DateTimeOffsetPropertyDescriptor(string propertyName, bool isRequired, DateTimeOffset minValue, 
+        DateTimeOffset maxValue)
+    {
+        Name = propertyName;
+        IsRequired = isRequired;
+        MaxValue = maxValue;
+        MinValue = minValue;
     }
 
     public string Name { get; }
@@ -27,7 +37,7 @@ public class DateTimeOffsetPropertyDescriptor : IPrimitivePropertyDescriptor
             valueForOutput = null;
         }
 
-        if (_isRequired && inputText == null)
+        if (IsRequired && inputText == null)
         {
             isValid = false;
             errors = [ PropertyError.IsRequired ];
@@ -36,21 +46,21 @@ public class DateTimeOffsetPropertyDescriptor : IPrimitivePropertyDescriptor
         if (isValidParsedValue)
         {
             valueForOutput = newValue;
-            if (newValue < _minValue)
+            if (newValue < MinValue)
             {
                 isValid = false;
-                errors = [PropertyError.LessThanDate(_minValue)];
+                errors = [PropertyError.LessThanDate(MinValue)];
             } 
-            else if (newValue > _maxValue)
+            else if (newValue > MaxValue)
             {
                 isValid = false;
-                errors = [PropertyError.MoreThanDate(_maxValue)];
+                errors = [PropertyError.MoreThanDate(MaxValue)];
             }
         }
         else
         {
             isValid = false;
-            errors = [PropertyError.InvalidDateTimeValue()];
+            errors = [ PropertyError.InvalidDateTimeValue ];
         }
 
         if (isValid)

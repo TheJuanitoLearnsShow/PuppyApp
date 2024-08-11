@@ -19,7 +19,9 @@ public class PuppyTypesTest
         var model = new ComplexPropertyDescriptor([
             new IntPropertyDescriptor("Age", 3, true ),
             new IntPropertyDescriptor("Grade", 2, false ),
-            new StringPropertyDescriptor("MiddleName", 3, true )
+            new StringPropertyDescriptor("MiddleName", 3, true ),
+            new DateTimeOffsetPropertyDescriptor("EnrollmentDate", true ),
+            
         ], "StudentEnrollment");
 
         var dataInput = new DataEntryInput();
@@ -27,6 +29,7 @@ public class PuppyTypesTest
             {"Age", new DataEntryInput() { PrimitiveValue = "10"}},
             {"Grade", new DataEntryInput() { PrimitiveValue = "29999"}},
             {"MiddleName", new DataEntryInput() { PrimitiveValue = "Abadacus"}},
+            {"EnrollmentDate", new DataEntryInput() { PrimitiveValue = "2024-09-01"}},
         };
         var state = new DictDataEntryValuesState();
         var results = model.Parse(dataInput, state);

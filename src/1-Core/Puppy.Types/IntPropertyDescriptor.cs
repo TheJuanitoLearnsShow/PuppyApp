@@ -2,16 +2,25 @@
 
 public class IntPropertyDescriptor : IPrimitivePropertyDescriptor
 {
-    private readonly bool _isRequired;
-    private readonly int _maxValue;
-    private readonly int _minValue;
+    public bool IsRequired { get; }
+
+    public int MaxValue { get; }
+
+    public int MinValue { get; }
 
     public IntPropertyDescriptor(string propertyName, int numDigits, bool isRequired)
     {
         Name = propertyName;
-        _isRequired = isRequired;
-        _maxValue = (int) Math.Pow(10, numDigits);
-        _minValue = -_maxValue;
+        IsRequired = isRequired;
+        MaxValue = (int) Math.Pow(10, numDigits);
+        MinValue = -MaxValue;
+    }
+    public IntPropertyDescriptor(string propertyName, int numDigits, bool isRequired, int minValue, int maxValue)
+    {
+        Name = propertyName;
+        IsRequired = isRequired;
+        MinValue = minValue;
+        MaxValue = maxValue;
     }
 
     public string Name { get; }
@@ -27,7 +36,7 @@ public class IntPropertyDescriptor : IPrimitivePropertyDescriptor
             valueForOutput = null;
         }
 
-        if (_isRequired && inputText == null)
+        if (IsRequired && inputText == null)
         {
             isValid = false;
             errors = [PropertyError.IsRequired];
@@ -36,15 +45,15 @@ public class IntPropertyDescriptor : IPrimitivePropertyDescriptor
         if (isNumeric)
         {
             valueForOutput = newValue;
-            if (newValue < _minValue)
+            if (newValue < MinValue)
             {
                 isValid = false;
-                errors = [PropertyError.LessThanMinValue(_minValue)];
+                errors = [PropertyError.LessThanMinValue(MinValue)];
             } 
-            else if (newValue > _maxValue)
+            else if (newValue > MaxValue)
             {
                 isValid = false;
-                errors = [PropertyError.MoreThanMaxValue(_maxValue)];
+                errors = [PropertyError.MoreThanMaxValue(MaxValue)];
             }
         }
         else

@@ -2,14 +2,23 @@
 
 public class StringPropertyDescriptor : IPrimitivePropertyDescriptor
 {
-    private readonly bool _isRequired;
-    private readonly int _maxLen;
+    public bool IsRequired { get; }
+    public string[] AllowedValues { get; }
+
+    public int MaxLen { get; }
 
     public StringPropertyDescriptor(string propertyName, int maxLength, bool isRequired)
     {
         Name = propertyName;
-        _isRequired = isRequired;
-        _maxLen = maxLength;
+        IsRequired = isRequired;
+        MaxLen = maxLength;
+    }
+    public StringPropertyDescriptor(string propertyName, int maxLength, bool isRequired, string[] allowedValues)
+    {
+        Name = propertyName;
+        IsRequired = isRequired;
+        MaxLen = maxLength;
+        AllowedValues = allowedValues;
     }
 
     public string Name { get; }
@@ -20,15 +29,20 @@ public class StringPropertyDescriptor : IPrimitivePropertyDescriptor
         var isValid = true;
         PropertyError[] errors = [];
 
-        if (_isRequired && inputText == null)
+        if (IsRequired && inputText == null)
         {
             isValid = false;
             errors = [PropertyError.IsRequired];
         }
-        else if (inputText?.Length > _maxLen)
+        else if (inputText?.Length > MaxLen)
         {
             isValid = false;
-            errors = [ PropertyError.ExceedsLength(_maxLen) ];
+            errors = [ PropertyError.ExceedsLength(MaxLen) ];
+        }
+        else if (AllowedValues.Length > 0 && !AllowedValues.Any(s => string.Equals(inputText, s, StringComparison.OrdinalIgnoreCase)))
+        {
+            isValid = false;
+            errors = [ PropertyError.InvalidOption ];
         }
 
         if (isValid)
