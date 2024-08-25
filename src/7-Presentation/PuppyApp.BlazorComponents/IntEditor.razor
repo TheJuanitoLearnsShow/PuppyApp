@@ -1,0 +1,13 @@
+﻿@using Microsoft.FluentUI.AspNetCore.Components
+<div class="my-component">
+    This component is defined in the <strong>PuppyApp.BlazorComponents</strong> library.
+</div>
+<label>@Label</label>
+<FluentNumberField @bind-Value="EditValue" Label="Integer" />
+<span class="err-msg">@Error</span>
+
+@code {
+int? EditValue { get; set; } 
+string? Label { get; set; } 
+string? Error { get; set; } 
+}
