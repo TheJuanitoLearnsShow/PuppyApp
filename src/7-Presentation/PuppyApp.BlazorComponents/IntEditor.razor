@@ -1,21 +1,22 @@
-﻿@using Humanizer
+﻿@using System.ComponentModel.DataAnnotations
+@using Humanizer
 @using Microsoft.FluentUI.AspNetCore.Components
 @using Puppy.Types
 
 
 <FluentNumberField @bind-Value="EditValue" Label="@Label" 
-                   Min="@PropertyDescriptor.MinValue.ToString()"
-                   Max="@PropertyDescriptor.MaxValue.ToString()"  />
+                   Min="@MinValue"
+                   Max="@MaxValue" TValue="int" />
 <span class="err-msg">@Error</span>
 
 @code {
-    private string? _editValue;
+    private int _editValue;
     private IntPropertyDescriptor _propertyDescriptor;
     private string? _label;
 
     [Parameter]
-    [EditorRequired]
-    IntPropertyDescriptor PropertyDescriptor
+    [Required]
+    public IntPropertyDescriptor PropertyDescriptor
     {
         get => _propertyDescriptor;
         set
@@ -26,22 +27,32 @@
     }
 
     [Parameter]
-    public string? EditValue
+    public int EditValue
     {
         get => _editValue;
         set
         {
             _editValue = value;
-            var errors = _propertyDescriptor.Validate(_editValue);
+            var errors = _propertyDescriptor.Validate(EditValueAsString);
             Error = string.Join(" | ", errors.Select(e => e.Description));
+            if (OnValueChanged != null) OnValueChanged(_propertyDescriptor.Name, EditValueAsString, errors.Length == 0);
         }
     }
 
-    string? Label
+    [Parameter]
+    public Action<string , string? , bool >? OnValueChanged { get; set; }
+    public string? EditValueAsString
+    {
+        get => EditValue.ToString();
+    }
+    
+    private string? Label
     {
         get => _label ?? _propertyDescriptor.Name.Humanize();
         set => _label = value;
     }
 
-    string? Error { get; set; } 
+    private string MinValue => PropertyDescriptor.MinValue.ToString();
+    private string MaxValue => PropertyDescriptor.MaxValue.ToString();
+    private string? Error { get; set; } 
 }

@@ -10,6 +10,13 @@ public class IntPropertyDescriptor : IPrimitivePropertyDescriptor
 
     public int MinValue { get; }
 
+    public IntPropertyDescriptor()
+    {
+        Name = string.Empty;
+        IsRequired = false;
+        MaxValue = 0;
+        MinValue = -MaxValue;
+    }
     public IntPropertyDescriptor(string propertyName, int numDigits, bool isRequired)
     {
         Name = propertyName;

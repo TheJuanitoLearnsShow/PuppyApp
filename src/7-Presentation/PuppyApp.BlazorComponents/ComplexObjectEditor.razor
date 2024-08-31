@@ -8,7 +8,7 @@
     <br/>
     @(prop switch
     {
-        IntPropertyDescriptor ip => (@<IntEditor PropertyDescriptor="@ip" />),
+        IntPropertyDescriptor ip => (@<IntEditor PropertyDescriptor="@ip" OnValueChanged="OnValueChanged" />),
         StringPropertyDescriptor sp => (@<StringEditor PropertyDescriptor="@sp" />),
         _ => (@<p>Field type not recognized</p>)
     })
@@ -16,15 +16,28 @@
 
 @code {
     private ComplexPropertyDescriptor _propertyDescriptor;
+    private Dictionary<string, DataEntryInput> _fields = new();
 
     [Parameter]
     [EditorRequired]
-    ComplexPropertyDescriptor PropertyDescriptor
+    public ComplexPropertyDescriptor PropertyDescriptor
     {
         get => _propertyDescriptor;
         set
         {
             _propertyDescriptor = value;
+            foreach (var prop in _propertyDescriptor.ChildProperties)
+            {
+                _fields[prop.Name] = new DataEntryInput() { PrimitiveValue = null };
+            }
+        }
+    }
+
+    private void OnValueChanged(string propName, string? newValue, bool isValid)
+    {
+        if (isValid)
+        {
+            _fields[propName].PrimitiveValue = newValue;
         }
     }
 
