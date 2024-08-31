@@ -12,6 +12,7 @@ public class StringPropertyDescriptor : IPrimitivePropertyDescriptor
         Name = propertyName;
         IsRequired = isRequired;
         MaxLen = maxLength;
+        AllowedValues = [];
     }
     public StringPropertyDescriptor(string propertyName, int maxLength, bool isRequired, string[] allowedValues)
     {
