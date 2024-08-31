@@ -3,19 +3,17 @@
 @using Puppy.Types
 
 
-<FluentNumberField @bind-Value="EditValue" Label="@Label" 
-                   Min="@PropertyDescriptor.MinValue.ToString()"
-                   Max="@PropertyDescriptor.MaxValue.ToString()"  />
+<FluentTextField @bind-Value="EditValue" Label="@Label" Maxlength="@PropertyDescriptor.MaxLen" />
 <span class="err-msg">@Error</span>
 
 @code {
     private string? _editValue;
-    private IntPropertyDescriptor _propertyDescriptor;
+    private StringPropertyDescriptor _propertyDescriptor;
     private string? _label;
 
     [Parameter]
     [EditorRequired]
-    IntPropertyDescriptor PropertyDescriptor
+    StringPropertyDescriptor PropertyDescriptor
     {
         get => _propertyDescriptor;
         set

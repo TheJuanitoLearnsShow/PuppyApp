@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Humanizer.Core" Version="2.14.1" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.7" />
         <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.9.3" />
     </ItemGroup>

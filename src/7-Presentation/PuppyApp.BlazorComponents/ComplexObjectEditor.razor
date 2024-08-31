@@ -1,0 +1,31 @@
+﻿@using Humanizer
+@using Microsoft.FluentUI.AspNetCore.Components
+@using Puppy.Types
+
+<h2> Form </h2>
+@foreach (var prop in PropertyDescriptor.ChildProperties)
+{
+    <br/>
+    @(prop switch
+    {
+        IntPropertyDescriptor ip => (@<IntEditor PropertyDescriptor="@ip" />),
+        StringPropertyDescriptor sp => (@<StringEditor PropertyDescriptor="@sp" />),
+        _ => (@<p>Field type not recognized</p>)
+    })
+}
+
+@code {
+    private ComplexPropertyDescriptor _propertyDescriptor;
+
+    [Parameter]
+    [EditorRequired]
+    ComplexPropertyDescriptor PropertyDescriptor
+    {
+        get => _propertyDescriptor;
+        set
+        {
+            _propertyDescriptor = value;
+        }
+    }
+
+}

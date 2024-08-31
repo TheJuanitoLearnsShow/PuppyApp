@@ -22,37 +22,30 @@ public class StringPropertyDescriptor : IPrimitivePropertyDescriptor
     }
 
     public string Name { get; }
-
+    
+    
     public DataEntryValidationResult Parse(DataEntryInput input, IDataEntryValuesState stateOutput)
     {
-        var inputText = input.PrimitiveValue;
-        var isValid = true;
-        PropertyError[] errors = [];
-
+        return PropertyDescriptorHelper.Parse(Name, Validate, stateOutput.SetValueString, input);
+    }
+    
+    public PropertyError[] Validate(string? inputText)
+    {
         if (IsRequired && inputText == null)
         {
-            isValid = false;
-            errors = [PropertyError.IsRequired];
-        }
-        else if (inputText?.Length > MaxLen)
-        {
-            isValid = false;
-            errors = [ PropertyError.ExceedsLength(MaxLen) ];
-        }
-        else if (AllowedValues.Length > 0 && !AllowedValues.Any(s => string.Equals(inputText, s, StringComparison.OrdinalIgnoreCase)))
-        {
-            isValid = false;
-            errors = [ PropertyError.InvalidOption ];
+            return [PropertyError.IsRequired];
         }
 
-        if (isValid)
+        if (inputText?.Length > MaxLen)
         {
-            stateOutput.SetValue(Name, inputText);
+            return [ PropertyError.ExceedsLength(MaxLen) ];
         }
-        return new DataEntryValidationResult()
+
+        if (AllowedValues.Length > 0 && !AllowedValues.Any(s => string.Equals(inputText, s, StringComparison.OrdinalIgnoreCase)))
         {
-            Errors = errors
-        };
+            return [ PropertyError.InvalidOption ];
+        }
+        return [];
     }
 
     public override string ToString()

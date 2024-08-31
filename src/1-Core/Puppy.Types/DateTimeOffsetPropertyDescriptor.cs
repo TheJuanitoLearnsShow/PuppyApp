@@ -28,49 +28,29 @@ public class DateTimeOffsetPropertyDescriptor : IPrimitivePropertyDescriptor
 
     public DataEntryValidationResult Parse(DataEntryInput input, IDataEntryValuesState stateOutput)
     {
-        var inputText = input.PrimitiveValue;
-        var isValid = true;
-        DateTimeOffset? valueForOutput = null;
-        PropertyError[] errors = [];
-        if (string.IsNullOrEmpty(inputText))
-        {
-            valueForOutput = null;
-        }
-
+        return PropertyDescriptorHelper.Parse(Name, Validate, stateOutput.SetValueDateTimeOffset, input);
+    }
+    
+    public PropertyError[] Validate(string? inputText)
+    {
         if (IsRequired && inputText == null)
         {
-            isValid = false;
-            errors = [ PropertyError.IsRequired ];
+            return [PropertyError.IsRequired];
         }
         var isValidParsedValue = DateTimeOffset.TryParse(inputText, out var newValue);
         if (isValidParsedValue)
         {
-            valueForOutput = newValue;
             if (newValue < MinValue)
             {
-                isValid = false;
-                errors = [PropertyError.LessThanDate(MinValue)];
-            } 
-            else if (newValue > MaxValue)
+                return [PropertyError.LessThanDate(MinValue)];
+            }
+
+            if (newValue > MaxValue)
             {
-                isValid = false;
-                errors = [PropertyError.MoreThanDate(MaxValue)];
+                return [PropertyError.MoreThanDate(MaxValue)];
             }
         }
-        else
-        {
-            isValid = false;
-            errors = [ PropertyError.InvalidDateTimeValue ];
-        }
-
-        if (isValid)
-        {
-            stateOutput.SetValue(Name, valueForOutput);
-        }
-        return new DataEntryValidationResult()
-        {
-            Errors = errors
-        };
+        return [];
     }
 
     public override string ToString()

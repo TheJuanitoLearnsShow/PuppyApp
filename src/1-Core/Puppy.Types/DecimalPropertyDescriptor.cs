@@ -35,49 +35,32 @@ public class DecimalPropertyDescriptor : IPrimitivePropertyDescriptor
 
     public DataEntryValidationResult Parse(DataEntryInput input, IDataEntryValuesState stateOutput)
     {
-        var inputText = input.PrimitiveValue;
-        var isValid = true;
-        decimal? valueForOutput = 0;
-        PropertyError[] errors = [];
-        if (string.IsNullOrEmpty(inputText))
-        {
-            valueForOutput = null;
-        }
-
+        return PropertyDescriptorHelper.Parse(Name, Validate, stateOutput.SetValueDecimal, input);
+    }
+    
+    public PropertyError[] Validate(string? inputText)
+    {
         if (IsRequired && inputText == null)
         {
-            isValid = false;
-            errors = [ PropertyError.IsRequired ];
+            return [ PropertyError.IsRequired ];
         }
         var isNumeric = decimal.TryParse(inputText, out var newValue);
         if (isNumeric)
         {
-            valueForOutput = newValue;
             if (newValue < MinValue)
             {
-                isValid = false;
-                errors = [PropertyError.LessThanMinValue(MinValue)];
-            } 
-            else if (newValue > MaxValue)
+                return [PropertyError.LessThanMinValue(MinValue)];
+            }
+            if (newValue > MaxValue)
             {
-                isValid = false;
-                errors = [PropertyError.MoreThanMaxValue(MaxValue)];
+                return [PropertyError.MoreThanMaxValue(MaxValue)];
             }
         }
         else
         {
-            isValid = false;
-            errors = [PropertyError.InvalidValue<decimal>()];
+            return [PropertyError.InvalidValue<decimal>()];
         }
-
-        if (isValid)
-        {
-            stateOutput.SetValue(Name, valueForOutput);
-        }
-        return new DataEntryValidationResult()
-        {
-            Errors = errors
-        };
+        return [];
     }
 
     public override string ToString()
