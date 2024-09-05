@@ -21,6 +21,10 @@ public record PropertyError(string Description, ValidationErrorCode Code = Valid
 
     public static PropertyError MoreThanMaxValue<T>(T maxValue) where T:INumber<T> => new ($"Must not be greater than {maxValue:N0}", ValidationErrorCode.MoreThanMaxValue);
     public static PropertyError InvalidValue<T>() => new ($"Not a valid {typeof(T).Name}", ValidationErrorCode.InvalidValue);
+    public static readonly PropertyError InvalidInt = new ($"Not a valid integer", ValidationErrorCode.InvalidValue);
+    public static readonly PropertyError InvalidDecimal = new ($"Not a valid decimal", ValidationErrorCode.InvalidValue);
+    public static readonly PropertyError InvalidDateTime = new ($"Not a valid date and time", ValidationErrorCode.InvalidValue);
+    
     public static readonly PropertyError InvalidDateTimeValue = new ($"Not a valid date and time format", ValidationErrorCode.InvalidValue);
     
     public static readonly PropertyError InvalidOption = new ($"Not a valid value from the possible options", ValidationErrorCode.InvalidOption);

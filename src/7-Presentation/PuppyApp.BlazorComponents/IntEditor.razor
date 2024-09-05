@@ -6,11 +6,11 @@
 
 <FluentNumberField @bind-Value="EditValue" Label="@Label" 
                    Min="@MinValue"
-                   Max="@MaxValue" TValue="int" />
+                   Max="@MaxValue" TValue="int?" />
 <span class="err-msg">@Error</span>
 
 @code {
-    private int _editValue;
+    private int? _editValue;
     private IntPropertyDescriptor _propertyDescriptor;
     private string? _label;
 
@@ -27,13 +27,13 @@
     }
 
     [Parameter]
-    public int EditValue
+    public int? EditValue
     {
         get => _editValue;
         set
         {
             _editValue = value;
-            var errors = _propertyDescriptor.Validate(EditValueAsString);
+            var errors = _propertyDescriptor.Validate(_editValue);
             Error = string.Join(" | ", errors.Select(e => e.Description));
             if (OnValueChanged != null) OnValueChanged(_propertyDescriptor.Name, EditValueAsString, errors.Length == 0);
         }

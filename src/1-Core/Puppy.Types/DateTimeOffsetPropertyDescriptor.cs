@@ -52,6 +52,23 @@ public class DateTimeOffsetPropertyDescriptor : IPrimitivePropertyDescriptor
         }
         return [];
     }
+    public PropertyError[] Validate(DateTimeOffset? newValue)
+    {
+        if (IsRequired && newValue == null)
+        {
+            return [PropertyError.IsRequired];
+        }
+        if (newValue < MinValue)
+        {
+            return [PropertyError.LessThanDate(MinValue)];
+        }
+
+        if (newValue > MaxValue)
+        {
+            return [PropertyError.MoreThanDate(MaxValue)];
+        }
+        return [];
+    }
 
     public override string ToString()
     {

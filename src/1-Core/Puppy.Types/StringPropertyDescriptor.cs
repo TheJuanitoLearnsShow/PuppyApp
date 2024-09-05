@@ -32,7 +32,7 @@ public class StringPropertyDescriptor : IPrimitivePropertyDescriptor
     
     public PropertyError[] Validate(string? inputText)
     {
-        if (IsRequired && inputText == null)
+        if (IsRequired && string.IsNullOrWhiteSpace(inputText))
         {
             return [PropertyError.IsRequired];
         }

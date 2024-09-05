@@ -40,7 +40,7 @@ public class DecimalPropertyDescriptor : IPrimitivePropertyDescriptor
     
     public PropertyError[] Validate(string? inputText)
     {
-        if (IsRequired && inputText == null)
+        if (IsRequired && string.IsNullOrWhiteSpace(inputText))
         {
             return [ PropertyError.IsRequired ];
         }
@@ -58,11 +58,27 @@ public class DecimalPropertyDescriptor : IPrimitivePropertyDescriptor
         }
         else
         {
-            return [PropertyError.InvalidValue<decimal>()];
+            return [PropertyError.InvalidDecimal];
         }
         return [];
     }
 
+    public PropertyError[] Validate(decimal? newValue)
+    {
+        if (IsRequired && newValue == null)
+        {
+            return [PropertyError.IsRequired];
+        }
+        if (newValue < MinValue)
+        {
+            return [PropertyError.LessThanMinValue(MinValue)];
+        }
+        if (newValue > MaxValue)
+        {
+            return [PropertyError.MoreThanMaxValue(MaxValue)];
+        }
+        return [];
+    }
     public override string ToString()
     {
         return Name;

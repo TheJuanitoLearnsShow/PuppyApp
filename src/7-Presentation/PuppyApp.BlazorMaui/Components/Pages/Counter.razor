@@ -11,7 +11,8 @@
     private 
         ComplexPropertyDescriptor _mainForm = new ComplexPropertyDescriptor([
             new IntPropertyDescriptor("Age", 3, true ),
-            new IntPropertyDescriptor("Grade", 2, false ),
+            new IntPropertyDescriptor("Grade", 2, false ),            
+            new DateTimeOffsetPropertyDescriptor("EnrollmentDate", true ),
             new StringPropertyDescriptor("MiddleName", 3, true )
             
         ], "StudentEnrollment");

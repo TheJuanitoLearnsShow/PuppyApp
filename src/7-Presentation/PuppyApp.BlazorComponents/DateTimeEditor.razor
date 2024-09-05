@@ -1,0 +1,75 @@
+﻿@using Humanizer
+@using Microsoft.FluentUI.AspNetCore.Components
+@using Puppy.Types
+
+<FluentDatePicker @bind-Value="@MyDate" />
+<FluentTimePicker @bind-Value="@MyTime"  />
+
+<span class="err-msg">@Error</span>
+
+@code {
+    private DateTimeOffset? _editValue;
+    private DateTimeOffsetPropertyDescriptor _propertyDescriptor;
+    private string? _label;
+
+    [Parameter]
+    [EditorRequired]
+    public DateTimeOffsetPropertyDescriptor PropertyDescriptor
+    {
+        get => _propertyDescriptor;
+        set
+        {
+            _propertyDescriptor = value;
+            Label = _propertyDescriptor.Name;
+        }
+    }
+
+    [Parameter]
+    public DateTimeOffset? EditValue
+    {
+        get => _editValue;
+        set
+        {
+            _editValue = value;
+            var errors = _propertyDescriptor.Validate(_editValue);
+            Error = string.Join(" | ", errors.Select(e => e.Description));
+        }
+    }
+
+    string? Label
+    {
+        get => _label ?? _propertyDescriptor.Name.Humanize();
+        set => _label = value;
+    }
+
+    string? Error { get; set; }
+
+    private DateTime? _datePart;
+    private DateTime? _timePart;
+    public DateTime? MyDate { 
+        get => _datePart ;
+        set
+        {
+            _datePart = value;
+            SetEditValue();
+        } 
+    }
+    public DateTime? MyTime { 
+        get => _timePart ;
+        set
+        {
+            _timePart = value;
+            SetEditValue();
+        }
+    }
+
+    private void SetEditValue()
+    {
+        DateTime? dateValue = _datePart == null || _timePart == null ? null : new DateTime(_datePart?.Year ?? 0, 
+            _datePart?.Month?? 0,_datePart?.Day?? 0,_timePart?.Hour ?? 0, _timePart?.Minute?? 0, _timePart?.Second ?? 0);
+        _editValue = dateValue == null ? null : new DateTimeOffset(DateTime.SpecifyKind(dateValue.Value, DateTimeKind.Local));
+        var errors = _propertyDescriptor.Validate(_editValue);
+        Error = string.Join(" | ", errors.Select(e => e.Description));
+    }
+
+}
