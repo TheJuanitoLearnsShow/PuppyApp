@@ -14,6 +14,22 @@ public class SqlParamTests
     }
 
     [Fact]
+    public async Task TestReadParamsForSpIntoPropDewscriptors()
+    {
+
+        var spName = "dbo.spEnrollStudent";
+        var service = new StoredProcParamsService();
+        var paramsTypes = (await service.GetParametersAsPropDescriptors(connStr, spName)).ChildProperties.ToList();
+        
+        foreach (var paramType in paramsTypes)
+        {
+            _testOutputHelper.WriteLine(paramType.ToString());
+        }
+
+        Assert.True(paramsTypes.Count > 0);
+    }
+    
+    [Fact]
     public async Task TestReadParamsForSp()
     {
 

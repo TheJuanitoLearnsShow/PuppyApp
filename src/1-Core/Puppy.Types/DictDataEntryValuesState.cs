@@ -56,6 +56,18 @@ public class DictDataEntryValuesState : IDataEntryValuesState
         }
     }
 
+    public void SetValueLong(string propName, string? newValue)
+    {
+        if (string.IsNullOrEmpty(newValue))
+        {
+            _values[propName] = null;
+        }
+        else
+        {
+            _values[propName] = int.Parse(newValue);
+        }
+    }
+    
     public void SetValueDecimal(string propName, string? newValue)
     {
         if (string.IsNullOrEmpty(newValue))

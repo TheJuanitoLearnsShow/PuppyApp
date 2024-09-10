@@ -50,6 +50,10 @@ public class DateTimeOffsetPropertyDescriptor : IPrimitivePropertyDescriptor
                 return [PropertyError.MoreThanDate(MaxValue)];
             }
         }
+        else
+        {
+            return new[] { PropertyError.InvalidDateTime };
+        }
         return [];
     }
     public PropertyError[] Validate(DateTimeOffset? newValue)

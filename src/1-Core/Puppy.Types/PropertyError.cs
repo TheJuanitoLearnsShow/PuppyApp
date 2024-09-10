@@ -24,6 +24,8 @@ public record PropertyError(string Description, ValidationErrorCode Code = Valid
     public static readonly PropertyError InvalidInt = new ($"Not a valid integer", ValidationErrorCode.InvalidValue);
     public static readonly PropertyError InvalidDecimal = new ($"Not a valid decimal", ValidationErrorCode.InvalidValue);
     public static readonly PropertyError InvalidDateTime = new ($"Not a valid date and time", ValidationErrorCode.InvalidValue);
+    public static readonly PropertyError InvalidLong = new ($"Not a valid number", ValidationErrorCode.InvalidValue);
+
     
     public static readonly PropertyError InvalidDateTimeValue = new ($"Not a valid date and time format", ValidationErrorCode.InvalidValue);
     
