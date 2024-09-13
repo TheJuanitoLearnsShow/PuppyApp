@@ -14,6 +14,14 @@ public class LongPropertyDescriptor : IPrimitivePropertyDescriptor
         MinValue = -MaxValue;
     }
 
+    public LongPropertyDescriptor(string propertyName, bool isRequired)
+    {
+        Name = propertyName;
+        IsRequired = isRequired;
+        MaxValue = long.MaxValue;
+        MinValue = long.MinValue;
+    }
+    
     public LongPropertyDescriptor(string propertyName, int numDigits, bool isRequired)
     {
         Name = propertyName;
@@ -90,6 +98,6 @@ public class LongPropertyDescriptor : IPrimitivePropertyDescriptor
 
     public override string ToString()
     {
-        return Name;
+        return $"{Name} Long {MaxValue}";
     }
 }

@@ -17,6 +17,13 @@ public class IntPropertyDescriptor : IPrimitivePropertyDescriptor
         MaxValue = 0;
         MinValue = -MaxValue;
     }
+    public IntPropertyDescriptor(string propertyName, bool isRequired)
+    {
+        Name = propertyName;
+        IsRequired = isRequired;
+        MaxValue = int.MaxValue;
+        MinValue = int.MinValue;
+    }
     public IntPropertyDescriptor(string propertyName, int numDigits, bool isRequired)
     {
         Name = propertyName;
@@ -83,6 +90,6 @@ public class IntPropertyDescriptor : IPrimitivePropertyDescriptor
     }
     public override string ToString()
     {
-        return Name;
+        return $"{Name} Int {MaxValue}";
     }
 }

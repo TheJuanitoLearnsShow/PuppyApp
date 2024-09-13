@@ -11,11 +11,11 @@
         <property name="integratedSecurity" value="true" />
       </driver-properties>
     </data-source>
-    <data-source source="LOCAL" name="Microsoft SQL Server LocalDB (JetBrains)" uuid="071f3703-802e-4509-9c58-e54a2c30d010">
+    <data-source source="LOCAL" name="SampleDb [2]" uuid="071f3703-802e-4509-9c58-e54a2c30d010">
       <driver-ref>sqlserver.localdb.jb</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.jetbrains.jdbc.sqlserver.SqlServerDriver</jdbc-driver>
-      <jdbc-url>Server=(localdb)\MSSQLLocalDB</jdbc-url>
+      <jdbc-url>Server=(localdb)\MSSQLLocalDB;Database=SampleDb</jdbc-url>
       <jdbc-additional-properties>
         <property name="LOCAL_DB_INSTANCE" value="MSSQLLocalDB" />
       </jdbc-additional-properties>

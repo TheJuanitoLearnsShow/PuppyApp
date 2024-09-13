@@ -6,7 +6,7 @@ namespace PuppyApp.Tests;
 public class SqlParamTests
 {
     private readonly ITestOutputHelper _testOutputHelper;
-    private string connStr = @"Data Source=.\sqlexpress;Database=SampleDb;Integrated Security=True;Pooling=False;MultipleActiveResultSets=True;Connect Timeout=60;";
+    private string connStr = @"Data Source=(localdb)\MSSQLLocalDB;Database=SampleDb;Integrated Security=True;";
 
     public SqlParamTests(ITestOutputHelper testOutputHelper)
     {
@@ -14,7 +14,7 @@ public class SqlParamTests
     }
 
     [Fact]
-    public async Task TestReadParamsForSpIntoPropDewscriptors()
+    public async Task TestReadParamsForSpIntoPropDescriptors()
     {
 
         var spName = "dbo.spEnrollStudent";

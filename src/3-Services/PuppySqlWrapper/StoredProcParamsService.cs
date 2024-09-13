@@ -28,18 +28,22 @@ public class StoredProcParamsService
 			
 			var translatedType =
 				SqlTranslations.TryGetValue(reader["BaseSqlTypeName"].ToString() ?? string.Empty, out var t) ? t : "string";
-			var isRequired = !propName.StartsWith("Optional", StringComparison.OrdinalIgnoreCase);
+			var isOptional = propName.StartsWith("Optional", StringComparison.OrdinalIgnoreCase) ||
+			                 (bool)reader["UdtIsNullable"];
+			var isRequired = !isOptional;
 			var isNumericType = reader["IsNumericType"] is bool && (bool)reader["IsNumericType"];
 			var prec = (int) reader["Prec"];
 			var scale = (int) reader["Scale"];
 			var maxLen = (short) reader["MaxLen"];
 			IPropertyDescriptor newType = translatedType switch
 			{
-				nameof(Int32) => new IntPropertyDescriptor(propName, prec, isRequired),
-				nameof(Int64) => new LongPropertyDescriptor(propName, prec, isRequired),
+				nameof(Int32) => new IntPropertyDescriptor(propName, isRequired),
+				nameof(Int64) => new LongPropertyDescriptor(propName, isRequired),
 				nameof(Decimal) => new DecimalPropertyDescriptor(propName, prec, scale, isRequired),
 				nameof(String) => new StringPropertyDescriptor(propName, maxLen, isRequired),
 				nameof(DateTimeOffset) => new DateTimeOffsetPropertyDescriptor(propName, isRequired),
+				nameof(DateTime) => new DateTimeOffsetPropertyDescriptor(propName, isRequired),
+				_ => new StringPropertyDescriptor(propName, maxLen, isRequired)
 			};
 			parametersTypes.Add(newType);
 		}
@@ -94,21 +98,22 @@ public class StoredProcParamsService
 	}
     private static string spParamsTypesQry = @"
                     select
-                    name ParameterName,  
-                    type_name(user_type_id) TypeName,  
-                    type_name(system_type_id) BaseSqlTypeName,
-                    max_length MaxLen,
-                    case when type_name(system_type_id) = 'uniqueidentifier' 
-                                then precision  
-                                else OdbcPrec(system_type_id, max_length, precision) end Prec,
-                    coalesce(OdbcScale(system_type_id, scale), -1) Scale, 
-	                case when OdbcScale(system_type_id, scale) is not null then cast(1 as bit)  else cast(0 as bit) end IsNumericType,
-                    parameter_id ParamOrder,  
-                    convert(sysname,
-                                    case when system_type_id in (35, 99, 167, 175, 231, 239)
-                                    then ServerProperty('collation') end) Collation
-
-                    from sys.parameters where object_id = object_id(@spName)
+					    p.name ParameterName,
+					    type_name(p.user_type_id) TypeName,
+					    type_name(p.system_type_id) BaseSqlTypeName,
+					    p.max_length MaxLen,
+					    case when type_name(p.system_type_id) = 'uniqueidentifier'
+					             then p.precision
+					         else OdbcPrec(p.system_type_id, p.max_length, p.precision) end Prec,
+					    coalesce(OdbcScale(p.system_type_id, p.scale), -1) Scale,
+					    case when OdbcScale(p.system_type_id, p.scale) is not null then cast(1 as bit)  else cast(0 as bit) end IsNumericType,
+					    p.parameter_id ParamOrder,
+					    case when t.is_user_defined = 1 and t.is_nullable = 1 then cast(1 as bit) else cast(0 as bit) end UdtIsNullable
+					    
+					from sys.parameters p
+					left join sys.types t
+						on p.user_type_id = t.user_type_id
+					where object_id = object_id(@spName)
                     "; // TODO get check constraint of column and try very basic parsing
     private static readonly Dictionary<string, string> SqlTranslations = new()
     {

@@ -51,6 +51,6 @@ public class StringPropertyDescriptor : IPrimitivePropertyDescriptor
 
     public override string ToString()
     {
-        return Name;
+        return $"{Name} String {MaxLen}";
     }
 }

@@ -81,6 +81,6 @@ public class DecimalPropertyDescriptor : IPrimitivePropertyDescriptor
     }
     public override string ToString()
     {
-        return Name;
+        return $"{Name} Decimal {NumDigits}, {DecimalPlaces}";
     }
 }

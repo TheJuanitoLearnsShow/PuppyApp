@@ -76,6 +76,6 @@ public class DateTimeOffsetPropertyDescriptor : IPrimitivePropertyDescriptor
 
     public override string ToString()
     {
-        return Name;
+        return $"{Name} DateTimeOffset";
     }
 }
