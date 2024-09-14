@@ -74,10 +74,10 @@ select  p.name                                                                  
         possibleValues.[Label],
         possibleValues.AllowedValue
 from sys.parameters p
-         left join sys.types t
+         inner join sys.types t
                    on p.user_type_id = t.user_type_id
          
-         left join puppy.ValuesAllowed possibleValues
+         inner join puppy.ValuesAllowed possibleValues
                    on t.is_user_defined = 1
                        and t.name = possibleValues.UdfName
 where object_id = object_id(@spName)

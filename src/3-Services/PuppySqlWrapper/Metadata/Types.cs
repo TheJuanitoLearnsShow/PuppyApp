@@ -33,17 +33,6 @@ public class StoreProcedureParameterMetadata
     public bool IsRequired { get; set; }
     public string TranslatedNetType { get; set; } = "string";
 }
-public record PuppySqlType(
-    string ParamName,
-    bool Required,
-    int Length,
-    string ClrTypeName,
-    int Decimals,
-    string BaseSqlTypeName
-)
-{
-    public string NonSqlParamName => ParamName[1..];
-};
 
 public record PuppySqlPossibleValuesType(
     string ParamName,

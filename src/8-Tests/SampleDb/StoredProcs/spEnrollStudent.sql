@@ -5,6 +5,7 @@
            ,@EnrolledOn datetime
            ,@GradeLevel [GradeLevel]
            ,@County CountyCode
+           ,@GPA GPA
 AS
 
 

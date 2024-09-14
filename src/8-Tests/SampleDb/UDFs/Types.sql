@@ -9,3 +9,8 @@ go;
 CREATE TYPE [dbo].CountyCode
 	FROM varchar(3) NOT NULL;
 go;
+
+
+CREATE TYPE [dbo].GPA
+	FROM numeric(3,2) NOT NULL;
+go;

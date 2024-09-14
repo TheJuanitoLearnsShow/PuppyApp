@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Text;
@@ -14,32 +15,61 @@ namespace PuppySqlWrapper;
 
 public class StoredProcParamsService
 {
-	private const string PuppyMetadataSpExists = @"EXISTS (SELECT 1 FROM sys.procedures WHERE Name = '[puppy].[spGetStoredProcedureMetadata]')";
+	
+	public async Task<ComplexPropertyDescriptor> GetParametersAsPropDescriptors(string connStr, string spname)
+	{
+		if (await IsPuppyGetStoredProcedureDefined(connStr))
+		{
+			return await GetParametersAsPropDescriptorsUsingPuppy(connStr, spname);
+		}
+		return await GetParametersAsPropDescriptorsNonPuppy(connStr, spname);
+	}
+	
 	public async Task<ComplexPropertyDescriptor> GetParametersAsPropDescriptorsUsingPuppy(string connStr, string spname)
 	{
 		var parametersTypes = new List<IPropertyDescriptor>();
 		await using var connection = new SqlConnection(connStr);
-		SqlCommand command = new(spParamsTypesQry, connection);
-           
+		SqlCommand command = new("[puppy].[spGetStoredProcedureMetadata]", connection);
+		command.CommandType = CommandType.StoredProcedure;
 		command.Parameters.AddWithValue("@spName", spname);
 		connection.Open();
 		var paramCount = 0;
 		await using var reader = await command.ExecuteReaderAsync();
+		var baseInfoRows = new List<PuppySqlParamType>();
 		while (await reader.ReadAsync())
 		{
 			paramCount++;
-			var propName = reader["ParameterName"].ToString()?[1..] ?? $"param{paramCount}";
+			var propName = reader["ParameterName"].ToString() ?? $"param{paramCount}";
 			
 			var translatedType =
-				SqlTranslations.TryGetValue(reader["BaseSqlTypeName"].ToString() ?? string.Empty, out var t) ? t : "string";
+				SqlTranslations.GetValueOrDefault(reader["BaseSqlTypeName"].ToString() ?? string.Empty, "string");
 			var isOptional = propName.StartsWith("Optional", StringComparison.OrdinalIgnoreCase) ||
 			                 (bool)reader["UdtIsNullable"];
 			var isRequired = !isOptional;
-			var isNumericType = reader["IsNumericType"] is bool && (bool)reader["IsNumericType"];
-			var prec = (int) reader["Prec"];
-			var scale = (int) reader["Scale"];
+			var decimals = (int) reader["Prec"];
+			var numDigits = (int) reader["Scale"];
 			var maxLen = (short) reader["MaxLen"];
-			IPropertyDescriptor newType = translatedType switch
+			var newParamInfo = new PuppySqlParamType(propName,isRequired, maxLen,translatedType, numDigits, decimals);
+			baseInfoRows.Add(newParamInfo);
+		}
+
+		var allowedValues = new List<ParamAllowedValue>();
+		if (await reader.NextResultAsync())
+		{
+			while (await reader.ReadAsync())
+			{
+				var propName = reader["ParameterName"].ToString();
+				var label = (int) reader["Label"];
+				var allowedValue = (int) reader["AllowedValue"];
+				allowedValues.Add(new ParamAllowedValue(propName, allowedValue, label));
+			}
+		}
+		await reader.CloseAsync();
+		
+		//Build properties here
+		foreach (var p in baseInfoRows)
+		{
+			IPropertyDescriptor newType = p.ClrTypeName switch
 			{
 				nameof(Int32) => new IntPropertyDescriptor(propName, isRequired),
 				nameof(Int64) => new LongPropertyDescriptor(propName, isRequired),
@@ -49,9 +79,7 @@ public class StoredProcParamsService
 				nameof(DateTime) => new DateTimeOffsetPropertyDescriptor(propName, isRequired),
 				_ => new StringPropertyDescriptor(propName, maxLen, isRequired)
 			};
-			parametersTypes.Add(newType);
 		}
-		await reader.CloseAsync();
 		return new ComplexPropertyDescriptor(parametersTypes, spname);
 	}
 	
@@ -172,5 +200,17 @@ public class StoredProcParamsService
 	    {"xml", nameof(String)}
 
     };
-    
+
+    private static async Task<bool> IsPuppyGetStoredProcedureDefined(string connStr)
+    {
+	    await using var connection = new SqlConnection(connStr);
+	    connection.Open();
+
+	    var query = $"SELECT OBJECT_ID('[puppy].[spGetStoredProcedureMetadata]')";
+
+	    await using var command = new SqlCommand(query, connection);
+	    var result = await command.ExecuteScalarAsync();
+
+	    return result != DBNull.Value && result != null;
+    }
 }
