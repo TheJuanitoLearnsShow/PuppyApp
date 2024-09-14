@@ -41,7 +41,7 @@ select p.name                                                                   
 
        rmny.MinValue                AS                                                                   MinValueMoney,
        rmny.MaxValue                AS                                                                   MaxValueMoney,
-       rmny.CustomValidationMessage AS                                                                   CustomValidationMessageRangeMoney,
+       rmny.CustomValidationMessage AS                                                                   CustomValidationMessageRangeMoney
 
 from sys.parameters p
          left join sys.types t
