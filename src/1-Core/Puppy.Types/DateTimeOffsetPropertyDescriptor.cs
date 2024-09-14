@@ -2,26 +2,40 @@
 
 public class DateTimeOffsetPropertyDescriptor : IPrimitivePropertyDescriptor
 {
+    private readonly DateTimeOffset _maxValue;
+    private readonly DateTimeOffset _minValue;
+    public int? MinValueDaysOffset { get; }
     public bool IsRequired { get; }
+    public int? MaxValueDaysOffset { get; }
 
-    public DateTimeOffset MaxValue { get; }
+    public DateTimeOffset MaxValue => MaxValueDaysOffset == null ? _maxValue : 
+        GetTodayDateTimeOffset().AddDays(MaxValueDaysOffset.Value);
 
-    public DateTimeOffset MinValue { get; }
+    private static DateTimeOffset GetTodayDateTimeOffset()
+    {
+        return new DateTimeOffset(DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Local));
+    }
+
+    public DateTimeOffset MinValue => MinValueDaysOffset == null ? _minValue: 
+        GetTodayDateTimeOffset().AddDays(MinValueDaysOffset.Value);
 
     public DateTimeOffsetPropertyDescriptor(string propertyName, bool isRequired)
     {
         Name = propertyName;
         IsRequired = isRequired;
-        MaxValue = DateTimeOffset.MaxValue;
-        MinValue = DateTimeOffset.MinValue;
+        _maxValue = DateTimeOffset.MaxValue;
+        _minValue = DateTimeOffset.MinValue;
     }
     public DateTimeOffsetPropertyDescriptor(string propertyName, bool isRequired, DateTimeOffset minValue, 
-        DateTimeOffset maxValue)
+        DateTimeOffset maxValue, int? minValueDaysOffset = null, 
+        int? maxValueDaysOffset = null)
     {
         Name = propertyName;
         IsRequired = isRequired;
-        MaxValue = maxValue;
-        MinValue = minValue;
+        _maxValue = maxValue;
+        _minValue = minValue;
+        MinValueDaysOffset = minValueDaysOffset;
+        MaxValueDaysOffset = maxValueDaysOffset;
     }
 
     public string Name { get; }

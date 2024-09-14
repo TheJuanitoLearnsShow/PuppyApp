@@ -14,18 +14,22 @@ public class DecimalPropertyDescriptor : IPrimitivePropertyDescriptor
         NumDigits = numDigits;
         IsRequired = isRequired;
         DecimalPlaces = decimalPlaces;
-        MaxValue = (decimal) Math.Pow(10, numDigits);
-        MinValue = -MaxValue;
+        var maxValByDigits =
+            decimal.Parse(new string('9', numDigits - decimalPlaces) + '.' + new string('9', decimalPlaces));
+        MinValue = -maxValByDigits;
+        MaxValue = maxValByDigits;
     }
     public DecimalPropertyDescriptor(string propertyName, int numDigits, int decimalPlaces, bool isRequired, 
-        decimal minValue, decimal maxValue)
+        decimal? minValue, decimal? maxValue)
     {
         Name = propertyName;
         NumDigits = numDigits;
         IsRequired = isRequired;
         DecimalPlaces = decimalPlaces;
-        MaxValue = maxValue;
-        MinValue = minValue;
+        var maxValByDigits =
+            decimal.Parse(new string('9', numDigits - decimalPlaces) + '.' + new string('9', decimalPlaces));
+        MinValue = minValue ?? -maxValByDigits;
+        MaxValue = maxValue ?? maxValByDigits;
     }
     
     public string Name { get; }

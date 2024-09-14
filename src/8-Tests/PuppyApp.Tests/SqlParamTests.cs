@@ -1,3 +1,4 @@
+using Puppy.Types;
 using PuppySqlWrapper;
 using Xunit.Abstractions;
 
@@ -26,6 +27,20 @@ public class SqlParamTests
             _testOutputHelper.WriteLine(paramType.ToString());
         }
 
+        var firstName = paramsTypes.FirstOrDefault(p => p.Name == "FirstName") as StringPropertyDescriptor;
+        Assert.NotNull(firstName);
+        Assert.Equal(2, firstName.MinLength);
+        
+        var gradeLevel = paramsTypes.FirstOrDefault(p => p.Name == "GradeLevel") as IntPropertyDescriptor;
+        Assert.NotNull(gradeLevel);
+        Assert.Equal(6, gradeLevel.MinValue);
+        Assert.Equal(12, gradeLevel.MaxValue);
+        
+        var gpa = paramsTypes.FirstOrDefault(p => p.Name == "GPA") as DecimalPropertyDescriptor;
+        Assert.NotNull(gpa);
+        Assert.Equal(-9.99M, gpa.MinValue);
+        Assert.Equal(9.99M, gpa.MaxValue);
+        
         Assert.True(paramsTypes.Count > 0);
     }
     

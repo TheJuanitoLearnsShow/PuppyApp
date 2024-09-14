@@ -40,24 +40,13 @@ public class StoredProcParamsService
 		var allowedValues = await GetAllowedValues(reader);
 
 		await reader.NextResultAsync();
-		var baseInfoRows = new List<PuppySqlParamType>();
 		while (await reader.ReadAsync())
 		{
 			paramCount++;
 			var newType = MapFromSqlToDescriptor(reader, paramCount, allowedValues);
 			parametersTypes.Add(newType);
-			
-			// var newParamInfo = new PuppySqlParamType(propName,isRequired, maxLen,translatedType, numDigits, decimals);
-			// baseInfoRows.Add(newParamInfo);
 		}
-
 		await reader.CloseAsync();
-		
-		//Build properties here
-		foreach (var p in baseInfoRows)
-		{
-			
-		}
 		return new ComplexPropertyDescriptor(parametersTypes, spname);
 	}
 
@@ -73,8 +62,8 @@ public class StoredProcParamsService
 		var isOptional = propName.StartsWith("Optional", StringComparison.OrdinalIgnoreCase) ||
 		                 (bool)reader["UdtIsNullable"];
 		var isRequired = !isOptional;
-		var decimals = (int) reader["Prec"];
-		var numDigits = (int) reader["Scale"];
+		var numDigits = (int) reader["Prec"];
+		var decimals = (int) reader["Scale"];
 		var maxLen = (short) reader["MaxLen"];
 			
 		var allowedValuesForParam = 
@@ -91,22 +80,27 @@ public class StoredProcParamsService
 				CoalesceValue(reader,"MinValueLong", long.MinValue), 
 				CoalesceValue(reader,"MaxValueLong", long.MaxValue)),
 			nameof(Decimal) => new DecimalPropertyDescriptor(propName, numDigits, decimals, isRequired, 
-				CoalesceValue(reader,
+				CoalesceValue<decimal?>(reader,
 					baseSqlType.Equals("money", StringComparison.OrdinalIgnoreCase) ? "MinValueMoney" : "MinValueDecimal", 
-					decimal.MinValue), 
-				CoalesceValue(reader,
+					null), 
+				CoalesceValue<decimal?>(reader,
 					baseSqlType.Equals("money", StringComparison.OrdinalIgnoreCase) ? "MaxValueMoney" : "MaxValueDecimal"
-					, decimal.MaxValue)),
+					, null)),
 			nameof(String) => new StringPropertyDescriptor(propName, 
 				CoalesceValue(reader,"MinLenString", 0),
 			maxLen, isRequired, allowedValuesForParam),
 			nameof(DateTimeOffset) => new DateTimeOffsetPropertyDescriptor(propName, isRequired, 
 				CoalesceValue(reader,"MinValueDateTime", DateTimeOffset.MinValue),
-				CoalesceValue(reader,"MaxValueDateTime", DateTimeOffset.MaxValue)
+				CoalesceValue(reader,"MaxValueDateTime", DateTimeOffset.MaxValue),
+				CoalesceValue<int?>(reader,"MinValueDaysOffsetDateTimeOffset", null),
+				CoalesceValue<int?>(reader,"MaxValueDaysOffsetDateTimeOffset", null)
 				),
 			nameof(DateTime) => new DateTimeOffsetPropertyDescriptor(propName, isRequired, 
 				CoalesceValue(reader,"MinValueDateTimeOffset", DateTimeOffset.MinValue),
-				CoalesceValue(reader,"MaxValueDateTimeOffset", DateTimeOffset.MaxValue)), // TODO add offset params into c3 for dynamic time checking
+				CoalesceValue(reader,"MaxValueDateTimeOffset", DateTimeOffset.MaxValue),
+				CoalesceValue<int?>(reader,"MinValueDaysOffsetDateTimeOffset", null),
+				CoalesceValue<int?>(reader,"MaxValueDaysOffsetDateTimeOffset", null)
+				),
 			_ => new StringPropertyDescriptor(propName, maxLen, isRequired, allowedValuesForParam)
 		};
 		return newType;

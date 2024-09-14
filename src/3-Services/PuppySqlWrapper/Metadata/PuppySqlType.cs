@@ -4,7 +4,7 @@ namespace PuppySqlWrapper.Metadata;
 
 public record AllowedValue(string ParamName, string Value, string Label)
 {
-    public LabelValuePair ToLabelValuePair() => new LabelValuePair(Label, Value)
+    public LabelValuePair ToLabelValuePair() => new LabelValuePair(Label, Value);
 }
 public record PuppySqlParamType(
     string ParamName,
