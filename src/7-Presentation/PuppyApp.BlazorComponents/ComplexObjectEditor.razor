@@ -9,6 +9,7 @@
     @(prop switch
     {
         IntPropertyDescriptor ip => (@<IntEditor PropertyDescriptor="@ip" OnValueChanged="OnValueChanged" />),
+        DecimalPropertyDescriptor ip => (@<DecimalEditor PropertyDescriptor="@ip" OnValueChanged="OnValueChanged" />),
         StringPropertyDescriptor sp => (@<StringEditor PropertyDescriptor="@sp" />),
         DateTimeOffsetPropertyDescriptor dtop => (@<DateTimeEditor PropertyDescriptor="@dtop" />),
         _ => (@<p>Field type not recognized</p>)

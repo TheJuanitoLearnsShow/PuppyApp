@@ -1,5 +1,6 @@
 ﻿CREATE PROCEDURE puppy.spSetValuesForTypes
 AS
+-- TODO: is there a way not use magic string for the udf type names?
 	delete [puppy].ValueLengthRangesString;
 	insert into [puppy].ValueLengthRangesString(
 	UdfName, 
@@ -23,6 +24,6 @@ AS
 	UdfName, 
 	[Label],
 	AllowedValue)
-	select 'County', 'Polk', 'PLK'
+	select 'CountyCode', 'Polk', 'PLK'
 	union all
-	select 'County', 'Hardee', 'HRD'
+	select 'CountyCode', 'Hardee', 'HRD'

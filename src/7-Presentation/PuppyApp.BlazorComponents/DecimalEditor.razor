@@ -1,0 +1,58 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using Humanizer
+@using Microsoft.FluentUI.AspNetCore.Components
+@using Puppy.Types
+
+
+<FluentNumberField @bind-Value="EditValue" Label="@Label" 
+                   Min="@MinValue"
+                   Max="@MaxValue" TValue="decimal?" />
+<span class="err-msg">@Error</span>
+
+@code {
+    private int? _editValue;
+    private DecimalPropertyDescriptor _propertyDescriptor;
+    private string? _label;
+
+    [Parameter]
+    [Required]
+    public DecimalPropertyDescriptor PropertyDescriptor
+    {
+        get => _propertyDescriptor;
+        set
+        {
+            _propertyDescriptor = value;
+            Label = _propertyDescriptor.Name;
+        }
+    }
+
+    [Parameter]
+    public int? EditValue
+    {
+        get => _editValue;
+        set
+        {
+            _editValue = value;
+            var errors = _propertyDescriptor.Validate(_editValue);
+            Error = string.Join(" | ", errors.Select(e => e.Description));
+            if (OnValueChanged != null) OnValueChanged(_propertyDescriptor.Name, EditValueAsString, errors.Length == 0);
+        }
+    }
+
+    [Parameter]
+    public Action<string , string? , bool >? OnValueChanged { get; set; }
+    public string? EditValueAsString
+    {
+        get => EditValue.ToString();
+    }
+    
+    private string? Label
+    {
+        get => _label ?? _propertyDescriptor.Name.Humanize();
+        set => _label = value;
+    }
+
+    private string MinValue => PropertyDescriptor.MinValue.ToString();
+    private string MaxValue => PropertyDescriptor.MaxValue.ToString();
+    private string? Error { get; set; } 
+}

@@ -41,6 +41,11 @@ public class SqlParamTests
         Assert.Equal(-9.99M, gpa.MinValue);
         Assert.Equal(9.99M, gpa.MaxValue);
         
+        var county = paramsTypes.FirstOrDefault(p => p.Name == "County") as StringPropertyDescriptor;
+        Assert.NotNull(county);
+        Assert.Equal(2, county.AllowedValues.Length); 
+        Assert.Contains("PLK", county.AllowedValues.Select(v => v.Value)); 
+        
         Assert.True(paramsTypes.Count > 0);
     }
     
