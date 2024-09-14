@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -35,54 +36,102 @@ public class StoredProcParamsService
 		connection.Open();
 		var paramCount = 0;
 		await using var reader = await command.ExecuteReaderAsync();
+		
+		var allowedValues = await GetAllowedValues(reader);
+
+		await reader.NextResultAsync();
 		var baseInfoRows = new List<PuppySqlParamType>();
 		while (await reader.ReadAsync())
 		{
 			paramCount++;
-			var propName = reader["ParameterName"].ToString() ?? $"param{paramCount}";
+			var newType = MapFromSqlToDescriptor(reader, paramCount, allowedValues);
+			parametersTypes.Add(newType);
 			
-			var translatedType =
-				SqlTranslations.GetValueOrDefault(reader["BaseSqlTypeName"].ToString() ?? string.Empty, "string");
-			var isOptional = propName.StartsWith("Optional", StringComparison.OrdinalIgnoreCase) ||
-			                 (bool)reader["UdtIsNullable"];
-			var isRequired = !isOptional;
-			var decimals = (int) reader["Prec"];
-			var numDigits = (int) reader["Scale"];
-			var maxLen = (short) reader["MaxLen"];
-			var newParamInfo = new PuppySqlParamType(propName,isRequired, maxLen,translatedType, numDigits, decimals);
-			baseInfoRows.Add(newParamInfo);
+			// var newParamInfo = new PuppySqlParamType(propName,isRequired, maxLen,translatedType, numDigits, decimals);
+			// baseInfoRows.Add(newParamInfo);
 		}
 
-		var allowedValues = new List<ParamAllowedValue>();
-		if (await reader.NextResultAsync())
-		{
-			while (await reader.ReadAsync())
-			{
-				var propName = reader["ParameterName"].ToString();
-				var label = (int) reader["Label"];
-				var allowedValue = (int) reader["AllowedValue"];
-				allowedValues.Add(new ParamAllowedValue(propName, allowedValue, label));
-			}
-		}
 		await reader.CloseAsync();
 		
 		//Build properties here
 		foreach (var p in baseInfoRows)
 		{
-			IPropertyDescriptor newType = p.ClrTypeName switch
-			{
-				nameof(Int32) => new IntPropertyDescriptor(propName, isRequired),
-				nameof(Int64) => new LongPropertyDescriptor(propName, isRequired),
-				nameof(Decimal) => new DecimalPropertyDescriptor(propName, prec, scale, isRequired),
-				nameof(String) => new StringPropertyDescriptor(propName, maxLen, isRequired),
-				nameof(DateTimeOffset) => new DateTimeOffsetPropertyDescriptor(propName, isRequired),
-				nameof(DateTime) => new DateTimeOffsetPropertyDescriptor(propName, isRequired),
-				_ => new StringPropertyDescriptor(propName, maxLen, isRequired)
-			};
+			
 		}
 		return new ComplexPropertyDescriptor(parametersTypes, spname);
 	}
-	
+
+	private static IPropertyDescriptor MapFromSqlToDescriptor(SqlDataReader reader, int paramCount, 
+		List<AllowedValue> allowedValues
+		)
+	{
+		var sqlParamName = reader["ParameterName"].ToString();
+		var propName = sqlParamName?[1..] ?? $"param{paramCount}";
+
+		var baseSqlType = reader["BaseSqlTypeName"].ToString() ?? string.Empty;
+		var translatedType = SqlTranslations.GetValueOrDefault(baseSqlType, "string");
+		var isOptional = propName.StartsWith("Optional", StringComparison.OrdinalIgnoreCase) ||
+		                 (bool)reader["UdtIsNullable"];
+		var isRequired = !isOptional;
+		var decimals = (int) reader["Prec"];
+		var numDigits = (int) reader["Scale"];
+		var maxLen = (short) reader["MaxLen"];
+			
+		var allowedValuesForParam = 
+			allowedValues
+				.Where(v => v.ParamName == sqlParamName && !string.IsNullOrEmpty(v.Value) )
+				.Select(v => v.ToLabelValuePair())
+				.ToArray();
+		IPropertyDescriptor newType = translatedType switch
+		{
+			nameof(Int32) => new IntPropertyDescriptor(propName, isRequired, 
+				CoalesceValue(reader,"MinValueInt", int.MinValue), 
+				CoalesceValue(reader,"MaxValueInt", int.MaxValue)),
+			nameof(Int64) => new LongPropertyDescriptor(propName, isRequired, 
+				CoalesceValue(reader,"MinValueLong", long.MinValue), 
+				CoalesceValue(reader,"MaxValueLong", long.MaxValue)),
+			nameof(Decimal) => new DecimalPropertyDescriptor(propName, numDigits, decimals, isRequired, 
+				CoalesceValue(reader,
+					baseSqlType.Equals("money", StringComparison.OrdinalIgnoreCase) ? "MinValueMoney" : "MinValueDecimal", 
+					decimal.MinValue), 
+				CoalesceValue(reader,
+					baseSqlType.Equals("money", StringComparison.OrdinalIgnoreCase) ? "MaxValueMoney" : "MaxValueDecimal"
+					, decimal.MaxValue)),
+			nameof(String) => new StringPropertyDescriptor(propName, 
+				CoalesceValue(reader,"MinLenString", 0),
+			maxLen, isRequired, allowedValuesForParam),
+			nameof(DateTimeOffset) => new DateTimeOffsetPropertyDescriptor(propName, isRequired, 
+				CoalesceValue(reader,"MinValueDateTime", DateTimeOffset.MinValue),
+				CoalesceValue(reader,"MaxValueDateTime", DateTimeOffset.MaxValue)
+				),
+			nameof(DateTime) => new DateTimeOffsetPropertyDescriptor(propName, isRequired, 
+				CoalesceValue(reader,"MinValueDateTimeOffset", DateTimeOffset.MinValue),
+				CoalesceValue(reader,"MaxValueDateTimeOffset", DateTimeOffset.MaxValue)), // TODO add offset params into c3 for dynamic time checking
+			_ => new StringPropertyDescriptor(propName, maxLen, isRequired, allowedValuesForParam)
+		};
+		return newType;
+	}
+
+	private static T CoalesceValue<T>(SqlDataReader reader, string columnName, T defaultValue)
+	{
+		var colIdx = reader.GetOrdinal(columnName);
+		return reader.IsDBNull(colIdx) ? defaultValue : (T) reader[colIdx];
+	}
+
+	private static async Task<List<AllowedValue>> GetAllowedValues(SqlDataReader reader)
+	{
+		var allowedValues = new List<AllowedValue>();
+		while (await reader.ReadAsync())
+		{
+			var propName = reader["ParameterName"].ToString() ?? string.Empty;
+			var label = reader["Label"].ToString() ?? string.Empty;
+			var allowedValue = reader["AllowedValue"].ToString() ?? string.Empty;
+			allowedValues.Add(new AllowedValue(propName, allowedValue, label));
+		}
+
+		return allowedValues;
+	}
+
 	public async Task<ComplexPropertyDescriptor> GetParametersAsPropDescriptorsNonPuppy(string connStr, string spname)
 	{
 		var parametersTypes = new List<IPropertyDescriptor>();

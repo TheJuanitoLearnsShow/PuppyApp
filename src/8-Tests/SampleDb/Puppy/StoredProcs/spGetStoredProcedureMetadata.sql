@@ -1,5 +1,19 @@
 ﻿CREATE PROCEDURE [puppy].[spGetStoredProcedureMetadata] @spName varchar(100)
 AS
+
+select  p.name                                                                                            ParameterName,
+        possibleValues.[Label],
+        possibleValues.AllowedValue
+from sys.parameters p
+         inner join sys.types t
+                   on p.user_type_id = t.user_type_id
+         
+         inner join puppy.ValuesAllowed possibleValues
+                   on t.is_user_defined = 1
+                       and t.name = possibleValues.UdfName
+where object_id = object_id(@spName)
+order by p.parameter_id, possibleValues.[Label];
+
 select p.name                                                                                            ParameterName,
        type_name(p.system_type_id)                                                                       BaseSqlTypeName,
        case when t.is_user_defined = 1 and t.is_nullable = 1 then cast(1 as bit) else cast(0 as bit) end UdtIsNullable,
@@ -69,16 +83,3 @@ from sys.parameters p
                        and t.name = rmny.UdfName
 where object_id = object_id(@spName)
 order by p.parameter_id;
-
-select  p.name                                                                                            ParameterName,
-        possibleValues.[Label],
-        possibleValues.AllowedValue
-from sys.parameters p
-         inner join sys.types t
-                   on p.user_type_id = t.user_type_id
-         
-         inner join puppy.ValuesAllowed possibleValues
-                   on t.is_user_defined = 1
-                       and t.name = possibleValues.UdfName
-where object_id = object_id(@spName)
-order by p.parameter_id, possibleValues.[Label];

@@ -2,8 +2,9 @@
 
 public class StringPropertyDescriptor : IPrimitivePropertyDescriptor
 {
+    public int MinLength { get; }
     public bool IsRequired { get; }
-    public string[] AllowedValues { get; }
+    public LabelValuePair[] AllowedValues { get; }
 
     public int MaxLen { get; }
 
@@ -14,14 +15,21 @@ public class StringPropertyDescriptor : IPrimitivePropertyDescriptor
         MaxLen = maxLength;
         AllowedValues = [];
     }
-    public StringPropertyDescriptor(string propertyName, int maxLength, bool isRequired, string[] allowedValues)
+    public StringPropertyDescriptor(string propertyName, int maxLength, bool isRequired, LabelValuePair[] allowedValues)
     {
         Name = propertyName;
         IsRequired = isRequired;
         MaxLen = maxLength;
         AllowedValues = allowedValues;
     }
-
+    public StringPropertyDescriptor(string propertyName, int minLength, int maxLength, bool isRequired, LabelValuePair[] allowedValues)
+    {
+        MinLength = minLength;
+        Name = propertyName;
+        IsRequired = isRequired;
+        MaxLen = maxLength;
+        AllowedValues = allowedValues;
+    }
     public string Name { get; }
     
     
@@ -37,12 +45,17 @@ public class StringPropertyDescriptor : IPrimitivePropertyDescriptor
             return [PropertyError.IsRequired];
         }
 
+        if (inputText?.Length < MinLength)
+        {
+            return [ PropertyError.NotLongEnough(MinLength) ];
+        }
         if (inputText?.Length > MaxLen)
         {
             return [ PropertyError.ExceedsLength(MaxLen) ];
         }
-
-        if (AllowedValues.Length > 0 && !AllowedValues.Any(s => string.Equals(inputText, s, StringComparison.OrdinalIgnoreCase)))
+        
+        if (AllowedValues.Length > 0 && !AllowedValues.Any(s => 
+                string.Equals(inputText, s.Value, StringComparison.OrdinalIgnoreCase)))
         {
             return [ PropertyError.InvalidOption ];
         }

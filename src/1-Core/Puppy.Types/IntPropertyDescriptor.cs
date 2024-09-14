@@ -31,7 +31,7 @@ public class IntPropertyDescriptor : IPrimitivePropertyDescriptor
         MaxValue = (int) Math.Pow(10, numDigits);
         MinValue = -MaxValue;
     }
-    public IntPropertyDescriptor(string propertyName, int numDigits, bool isRequired, int minValue, int maxValue)
+    public IntPropertyDescriptor(string propertyName, bool isRequired, int minValue, int maxValue)
     {
         Name = propertyName;
         IsRequired = isRequired;

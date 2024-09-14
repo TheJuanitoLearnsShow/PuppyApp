@@ -30,7 +30,7 @@ public class LongPropertyDescriptor : IPrimitivePropertyDescriptor
         MinValue = -MaxValue;
     }
 
-    public LongPropertyDescriptor(string propertyName, int numDigits, bool isRequired, long minValue, long maxValue)
+    public LongPropertyDescriptor(string propertyName, bool isRequired, long minValue, long maxValue)
     {
         Name = propertyName;
         IsRequired = isRequired;

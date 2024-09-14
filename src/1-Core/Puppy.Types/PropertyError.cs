@@ -10,7 +10,8 @@ public enum ValidationErrorCode
     MoreThanMaxValue,
     InvalidValue,
     ExceedsLength,
-    InvalidOption
+    InvalidOption,
+    NotLongEnough
 }
 public record PropertyError(string Description, ValidationErrorCode Code = ValidationErrorCode.GenericValidation)
 {
@@ -31,4 +32,7 @@ public record PropertyError(string Description, ValidationErrorCode Code = Valid
     
     public static readonly PropertyError InvalidOption = new ($"Not a valid value from the possible options", ValidationErrorCode.InvalidOption);
     public static PropertyError ExceedsLength(int maxLen) => new ($"Length cannot be more than {maxLen}", ValidationErrorCode.ExceedsLength);
+    public static PropertyError NotLongEnough(int minLen) => new ($"Length cannot be less than {minLen}", ValidationErrorCode.NotLongEnough);
+    
+    
 }
