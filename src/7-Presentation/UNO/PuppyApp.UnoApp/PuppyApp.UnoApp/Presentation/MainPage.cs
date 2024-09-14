@@ -1,4 +1,6 @@
-﻿namespace PuppyApp.UnoApp.Presentation;
+﻿using PuppyApp.UnoApp.Components;
+
+namespace PuppyApp.UnoApp.Presentation;
 
 public sealed partial class MainPage : Page
 {
@@ -18,6 +20,7 @@ public sealed partial class MainPage : Page
                         .VerticalAlignment(VerticalAlignment.Center)
                         .Spacing(16)
                         .Children(
+                            IntEditor.Create(),
                             new TextBox()
                                 .Text(x => x.Binding(() => vm.Name).Mode(BindingMode.TwoWay))
                                 .PlaceholderText("Enter your name:"),
