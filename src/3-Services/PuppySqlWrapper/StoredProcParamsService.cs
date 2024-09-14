@@ -6,12 +6,56 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Puppy.Types;
+using PuppySqlWrapper.Metadata;
 
 namespace PuppySqlWrapper;
 
+
+
 public class StoredProcParamsService
 {
-	public async Task<ComplexPropertyDescriptor> GetParametersAsPropDescriptors(string connStr, string spname)
+	private const string PuppyMetadataSpExists = @"EXISTS (SELECT 1 FROM sys.procedures WHERE Name = '[puppy].[spGetStoredProcedureMetadata]')";
+	public async Task<ComplexPropertyDescriptor> GetParametersAsPropDescriptorsUsingPuppy(string connStr, string spname)
+	{
+		var parametersTypes = new List<IPropertyDescriptor>();
+		await using var connection = new SqlConnection(connStr);
+		SqlCommand command = new(spParamsTypesQry, connection);
+           
+		command.Parameters.AddWithValue("@spName", spname);
+		connection.Open();
+		var paramCount = 0;
+		await using var reader = await command.ExecuteReaderAsync();
+		while (await reader.ReadAsync())
+		{
+			paramCount++;
+			var propName = reader["ParameterName"].ToString()?[1..] ?? $"param{paramCount}";
+			
+			var translatedType =
+				SqlTranslations.TryGetValue(reader["BaseSqlTypeName"].ToString() ?? string.Empty, out var t) ? t : "string";
+			var isOptional = propName.StartsWith("Optional", StringComparison.OrdinalIgnoreCase) ||
+			                 (bool)reader["UdtIsNullable"];
+			var isRequired = !isOptional;
+			var isNumericType = reader["IsNumericType"] is bool && (bool)reader["IsNumericType"];
+			var prec = (int) reader["Prec"];
+			var scale = (int) reader["Scale"];
+			var maxLen = (short) reader["MaxLen"];
+			IPropertyDescriptor newType = translatedType switch
+			{
+				nameof(Int32) => new IntPropertyDescriptor(propName, isRequired),
+				nameof(Int64) => new LongPropertyDescriptor(propName, isRequired),
+				nameof(Decimal) => new DecimalPropertyDescriptor(propName, prec, scale, isRequired),
+				nameof(String) => new StringPropertyDescriptor(propName, maxLen, isRequired),
+				nameof(DateTimeOffset) => new DateTimeOffsetPropertyDescriptor(propName, isRequired),
+				nameof(DateTime) => new DateTimeOffsetPropertyDescriptor(propName, isRequired),
+				_ => new StringPropertyDescriptor(propName, maxLen, isRequired)
+			};
+			parametersTypes.Add(newType);
+		}
+		await reader.CloseAsync();
+		return new ComplexPropertyDescriptor(parametersTypes, spname);
+	}
+	
+	public async Task<ComplexPropertyDescriptor> GetParametersAsPropDescriptorsNonPuppy(string connStr, string spname)
 	{
 		var parametersTypes = new List<IPropertyDescriptor>();
 		await using var connection = new SqlConnection(connStr);
@@ -74,24 +118,6 @@ public class StoredProcParamsService
 				(int)reader["Scale"], 
 				reader["BaseSqlTypeName"].ToString() ?? string.Empty);
 			parametersTypes.Add(newType);
-			// if p.IsNumericType then 
-			// {
-			// 	Required = true
-			// 	Length = p.Prec
-			// 	Nature = p.BaseSqlTypeName |> Puppy.SqlMapper.SqlTypeTranslator.ToNature
-			// 		Decimals = p.Scale
-			// 	Ranges = getRangeFor p.TypeName
-			// 		LookupInfo = lkInfo
-			// }
-			// else 
-			// {
-			// 	Required = true
-			// 	Length = p.MaxLen
-			// 	Nature = p.BaseSqlTypeName |> Puppy.SqlMapper.SqlTypeTranslator.ToNature
-			// 		Decimals = 0
-			// 	Ranges = getRangeFor p.TypeName
-			// 		LookupInfo = lkInfo
-			// }
 		}
 		await reader.CloseAsync();
 		return parametersTypes;
@@ -114,6 +140,7 @@ public class StoredProcParamsService
 					left join sys.types t
 						on p.user_type_id = t.user_type_id
 					where object_id = object_id(@spName)
+					order by p.parameter_id
                     "; // TODO get check constraint of column and try very basic parsing
     private static readonly Dictionary<string, string> SqlTranslations = new()
     {

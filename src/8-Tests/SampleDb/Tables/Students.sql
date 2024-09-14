@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[Students]
 (
 	[Id] INT NOT NULL PRIMARY KEY identity,
-	[FirstName] varchar(50) NOT NULL,
-	[LastName] varchar(50) NOT NULL,
+	[FirstName] PersonName,
+	[LastName] PersonName,
 	[Age] int NOT NULL
 )

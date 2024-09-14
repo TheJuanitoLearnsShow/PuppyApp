@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using LanguageExt;
-using LanguageExt.Common;
 
-namespace PuppySqlWrapper;
+namespace PuppySqlWrapper.Metadata;
 
 public interface IPossibleValues
 {
@@ -23,7 +22,17 @@ public record ValuesList(IReadOnlyList<ValueLabelPair> Values) : IPossibleValues
 public record ValueLabelPair(string Value, string Label)
 {
 }
+public class StoreProcedureMetadata
+{
+    public StoreProcedureParameterMetadata[] ParametersMetadata { get; set; }
+}
 
+public class StoreProcedureParameterMetadata
+{
+    public string Name { get; set; } = string.Empty;
+    public bool IsRequired { get; set; }
+    public string TranslatedNetType { get; set; } = "string";
+}
 public record PuppySqlType(
     string ParamName,
     bool Required,

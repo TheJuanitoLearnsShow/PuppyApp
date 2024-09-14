@@ -1,9 +1,10 @@
 ﻿CREATE PROCEDURE [dbo].[spEnrollStudent]
-	@FirstName varchar(50)
-           ,@LastName varchar(50)
+	@FirstName PersonName
+           ,@LastName PersonName
            ,@Age int
            ,@EnrolledOn datetime
            ,@GradeLevel [GradeLevel]
+           ,@County CountyCode
 AS
 
 

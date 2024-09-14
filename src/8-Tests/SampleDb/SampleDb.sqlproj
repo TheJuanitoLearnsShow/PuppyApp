@@ -16,12 +16,13 @@
     <ModelCollation>1033, CI</ModelCollation>
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
     <DeployToDatabase>True</DeployToDatabase>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetLanguage>CS</TargetLanguage>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -62,6 +63,7 @@
     <Folder Include="Puppy\Tables" />
     <Folder Include="Puppy\StoredProcs" />
     <Folder Include="UDFs" />
+    <Folder Include="Puppy\StoredProcs\ToChangeBetweenProjects" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Students.sql" />
@@ -69,10 +71,20 @@
     <Build Include="Tables\Grade Levels.sql" />
     <Build Include="Puppy\puppy.sql" />
     <Build Include="Puppy\Tables\LookupValueConstraints.sql" />
-    <Build Include="Puppy\StoredProcs\spSetLookups.sql" />
     <Build Include="UDFs\Types.sql" />
     <Build Include="Puppy\Tables\StoredProceduresMetaData.sql" />
-    <Build Include="Puppy\StoredProcs\spSetSpMetadata.sql" />
+    <Build Include="Puppy\Tables\ValueRangesInt.sql" />
+    <Build Include="Puppy\Tables\ValueRangesLong.sql" />
+    <Build Include="Puppy\Tables\ValueRangesDecimal.sql" />
+    <Build Include="Puppy\Tables\ValueRangesMoney.sql" />
+    <Build Include="Puppy\Tables\ValueRangesDateTime.sql" />
+    <Build Include="Puppy\Tables\ValueRangesDateTimeOffset.sql" />
+    <Build Include="Puppy\Tables\ValuesAllowed.sql" />
+    <Build Include="Puppy\StoredProcs\ToChangeBetweenProjects\spSetLookups.sql" />
+    <Build Include="Puppy\StoredProcs\ToChangeBetweenProjects\spSetSpMetadata.sql" />
+    <Build Include="Puppy\StoredProcs\spGetStoredProcedureMetadata.sql" />
+    <Build Include="Puppy\Tables\ValueLengthRangesString.sql" />
+    <Build Include="Puppy\StoredProcs\ToChangeBetweenProjects\spSetValuesForTypes.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SampleDb.publish-local.xml" />
@@ -80,5 +92,15 @@
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="SampleDb.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\160\SqlSchemas\master.dacpac">
+      <HintPath>$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\160\SqlSchemas\master.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
   </ItemGroup>
 </Project>
