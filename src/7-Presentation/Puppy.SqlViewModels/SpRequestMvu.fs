@@ -64,33 +64,33 @@ let bindings () : Binding<Model, Msg> list = [
     (fun m -> m.SpParams),
     (fun e -> e.SpParamHelper.SpParamName),
     paramBindings
-    //SpParamMvu.bindings
-    //(fun () -> [
-    //  "Name" |> Binding.oneWay (fun (_, e) -> e.Name)
-    //  "SelectedLabel" |> Binding.oneWay (fun (m, e) -> if m.Selected = Some e.Id then " - SELECTED" else "")
-    //])
+    // SpParamMvu.bindings
+    // (fun () -> [
+    //   "Name" |> Binding.oneWay (fun (_, e) -> e.Name)
+    //   "SelectedLabel" |> Binding.oneWay (fun (m, e) -> if m.Selected = Some e.Id then " - SELECTED" else "")
+    // ])
     )
 
 
 ]
 
-//let main window (connStr: string) =
+let main window (connStr: string) =
 
-//    let logger =
-//        LoggerConfiguration()
-//          .MinimumLevel.Override("Elmish.WPF.Update", Events.LogEventLevel.Verbose)
-//          .MinimumLevel.Override("Elmish.WPF.Bindings", Events.LogEventLevel.Verbose)
-//          .MinimumLevel.Override("Elmish.WPF.Performance", Events.LogEventLevel.Verbose)
-//          .WriteTo.Console()
-//          .CreateLogger()
-//    async {
-//      let conn = new SqlConnection(connStr);
-//      conn.Open()
-//      let! spParams = 
-//        (PuppyData.SqlMapper.StoredProcProcessor.GetParamHelpers conn "spEnrollStudent")
-//      let initialModel = init (spParams |> Seq.map (SpParamMvu.init))
-//      WpfProgram.mkSimple initialModel update bindings
-//      |> WpfProgram.withLogger (new SerilogLoggerFactory(logger))
-//      |> WpfProgram.startElmishLoop window
-//    } |> Async.StartImmediate
+    let logger =
+        LoggerConfiguration()
+          .MinimumLevel.Override("Elmish.WPF.Update", Events.LogEventLevel.Verbose)
+          .MinimumLevel.Override("Elmish.WPF.Bindings", Events.LogEventLevel.Verbose)
+          .MinimumLevel.Override("Elmish.WPF.Performance", Events.LogEventLevel.Verbose)
+          .WriteTo.Console()
+          .CreateLogger()
+    async {
+      let conn = new SqlConnection(connStr);
+      conn.Open()
+      let! spParams = 
+        (PuppyData.SqlMapper.StoredProcProcessor.GetParamHelpers conn "spEnrollStudent")
+      let initialModel = init (spParams |> Seq.map (SpParamMvu.init))
+      WpfProgram.mkSimple initialModel update bindings
+      |> WpfProgram.withLogger (new SerilogLoggerFactory(logger))
+      |> WpfProgram.startElmishLoop window
+    } |> Async.StartImmediate
       

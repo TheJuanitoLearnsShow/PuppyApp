@@ -37,6 +37,7 @@ type RequestFormViewModel(fieldDefinitions: ParamHelper[], initialValues: IDicti
                     )
                 |>  Seq.iter (fun kvp -> currDraftValues.[kvp.fieldDefinition.SpParamName] <- kvp)
     
+    new() = RequestFormViewModel([|  |], dict [] )
     member val DraftFields = currDraftValues.Values
     
     member x.SetFieldValue (fieldName:string) (newValue:string) =

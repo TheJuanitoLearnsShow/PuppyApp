@@ -1,6 +1,7 @@
 ﻿namespace Puppy.SqlViewModels
 
 open System.ComponentModel
+open System.Windows.Input
 open PuppyData.SqlMapper
 open PuppyData.Types
 open System.Collections.Generic
@@ -8,6 +9,14 @@ open FSharp.Control.Reactive
 open System.Reactive
 open System
 
+type RelayCommand(execute: Action, canExecute: Func<bool>) =
+    let ev = new Event<_,_>()
+    interface ICommand with
+        [<CLIEvent>]
+        member _.CanExecuteChanged = ev.Publish
+        member _.CanExecute(_) = canExecute.Invoke()
+        member _.Execute(_) = execute.Invoke()
+        
 type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string, connStr: string) as this=
     let ev = new Event<_,_>()
     let evErr = new Event<_,_>()
@@ -26,7 +35,15 @@ type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string, conn
 
 
     let validateValue =
-        StoredProcProcessor.ValidateSpParam spParamHelper 
+        StoredProcProcessor.ValidateSpParam spParamHelper
+        
+    let lookupWindowCmd = RelayCommand(
+                (
+                    fun _ -> // Your logic here
+                        printfn "Command executed!"
+                ),
+                fun _ -> true
+            )
         
     member x.IsValid = _errors |> Seq.isEmpty
     member val NetNature = puppyInfo.Nature
@@ -72,7 +89,9 @@ type SpParameterViewModel(spParamHelper: ParamHelper, initialValue: string, conn
                 | _ ->
                     ()
 
-
+    member this.LookupWindowCmd
+        with get() = lookupWindowCmd
+        
     interface INotifyPropertyChanged with
         [<CLIEvent>]
         member x.PropertyChanged = ev.Publish
