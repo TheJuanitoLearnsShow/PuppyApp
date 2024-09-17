@@ -1,4 +1,5 @@
-﻿@using Humanizer
+﻿@using System.ComponentModel.DataAnnotations
+@using Humanizer
 @using Microsoft.FluentUI.AspNetCore.Components
 @using Puppy.Types
 
@@ -24,13 +25,17 @@
     }
 
     [Parameter]
+    [EditorRequired]
+    public IDataEntryTypedValuesState StateOutput { get; set; }
+
+    [Parameter]
     public string? EditValue
     {
         get => _editValue;
         set
         {
             _editValue = value;
-            var errors = _propertyDescriptor.Validate(_editValue);
+            var errors = _propertyDescriptor.SetValue(_editValue, StateOutput);
             Error = string.Join(" | ", errors.Select(e => e.Description));
         }
     }

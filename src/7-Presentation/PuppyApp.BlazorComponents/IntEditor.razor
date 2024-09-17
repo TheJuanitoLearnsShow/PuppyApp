@@ -27,13 +27,17 @@
     }
 
     [Parameter]
+    [Required]
+    public IDataEntryTypedValuesState StateOutput { get; set; }
+    
+    [Parameter]
     public int? EditValue
     {
         get => _editValue;
         set
         {
             _editValue = value;
-            var errors = _propertyDescriptor.Validate(_editValue);
+            var errors = _propertyDescriptor.SetValue(_editValue, StateOutput);
             Error = string.Join(" | ", errors.Select(e => e.Description));
             if (OnValueChanged != null) OnValueChanged(_propertyDescriptor.Name, EditValueAsString, errors.Length == 0);
         }

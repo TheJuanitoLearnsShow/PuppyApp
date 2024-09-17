@@ -8,10 +8,11 @@
     <br/>
     @(prop switch
     {
-        IntPropertyDescriptor ip => (@<IntEditor PropertyDescriptor="@ip" OnValueChanged="OnValueChanged" />),
-        DecimalPropertyDescriptor ip => (@<DecimalEditor PropertyDescriptor="@ip" OnValueChanged="OnValueChanged" />),
-        StringPropertyDescriptor sp => (@<StringEditor PropertyDescriptor="@sp" />),
-        DateTimeOffsetPropertyDescriptor dtop => (@<DateTimeEditor PropertyDescriptor="@dtop" />),
+        LongPropertyDescriptor ip => (@<LongEditor PropertyDescriptor="@ip" StateOutput="StateOutput" />),
+        IntPropertyDescriptor ip => (@<IntEditor PropertyDescriptor="@ip" StateOutput="StateOutput" />),
+        DecimalPropertyDescriptor ip => (@<DecimalEditor PropertyDescriptor="@ip" StateOutput="StateOutput" />),
+        StringPropertyDescriptor sp => (@<StringEditor PropertyDescriptor="@sp" StateOutput="StateOutput" />),
+        DateTimeOffsetPropertyDescriptor dtop => (@<DateTimeEditor PropertyDescriptor="@dtop" StateOutput="StateOutput" />),
         _ => (@<p>Field type not recognized</p>)
     })
 }
@@ -20,6 +21,10 @@
     private ComplexPropertyDescriptor _propertyDescriptor;
     private Dictionary<string, DataEntryInput> _fields = new();
 
+    [Parameter]
+    [EditorRequired]
+    public IDataEntryTypedValuesState StateOutput { get; set; }
+    
     [Parameter]
     [EditorRequired]
     public ComplexPropertyDescriptor PropertyDescriptor

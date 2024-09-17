@@ -6,17 +6,17 @@
 
 <FluentNumberField @bind-Value="EditValue" Label="@Label" 
                    Min="@MinValue"
-                   Max="@MaxValue" TValue="decimal?" />
+                   Max="@MaxValue" TValue="long?" />
 <span class="err-msg">@Error</span>
 
 @code {
-    private int? _editValue;
-    private DecimalPropertyDescriptor _propertyDescriptor;
+    private long? _editValue;
+    private LongPropertyDescriptor _propertyDescriptor;
     private string? _label;
 
     [Parameter]
     [Required]
-    public DecimalPropertyDescriptor PropertyDescriptor
+    public LongPropertyDescriptor PropertyDescriptor
     {
         get => _propertyDescriptor;
         set
@@ -27,11 +27,7 @@
     }
 
     [Parameter]
-    [Required]
-    public IDataEntryTypedValuesState StateOutput { get; set; }
-
-    [Parameter]
-    public int? EditValue
+    public long? EditValue
     {
         get => _editValue;
         set
@@ -39,9 +35,14 @@
             _editValue = value;
             var errors = _propertyDescriptor.SetValue(_editValue, StateOutput);
             Error = string.Join(" | ", errors.Select(e => e.Description));
-            if (OnValueChanged != null) OnValueChanged(_propertyDescriptor.Name, EditValueAsString, errors.Length == 0);
+            
+            OnValueChanged?.Invoke(_propertyDescriptor.Name, EditValueAsString, errors.Length == 0);
         }
     }
+
+    [Parameter]
+    [Required]
+    public IDataEntryTypedValuesState StateOutput { get; set; }
 
     [Parameter]
     public Action<string , string? , bool >? OnValueChanged { get; set; }

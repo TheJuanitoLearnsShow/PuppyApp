@@ -38,6 +38,23 @@ public class StringPropertyDescriptor : IPrimitivePropertyDescriptor
         return PropertyDescriptorHelper.Parse(Name, Validate, stateOutput.SetValueString, input);
     }
     
+    public PropertyError[] SetValue(string? input, IDataEntryTypedValuesState stateOutput)
+    {
+        var errors = Validate(input);
+        if (errors.Length == 0)
+        {
+            if (input == null)
+            {
+                stateOutput.SetNullValue(Name);
+            }
+            else
+            {
+                stateOutput.SetValue(Name, input);
+            }
+        }
+        stateOutput.SetErrors(Name, errors);
+        return errors;
+    }
     public PropertyError[] Validate(string? inputText)
     {
         if (IsRequired && string.IsNullOrWhiteSpace(inputText))

@@ -44,10 +44,24 @@ public class LongPropertyDescriptor : IPrimitivePropertyDescriptor
     {
         return PropertyDescriptorHelper.Parse(Name, Validate, stateOutput.SetValueLong, input);
     }
-    // public DataEntryValidationResult Parse(DataEntryInput input, IDataEntryTypedValuesState stateOutput)
-    // {
-    //     return PropertyDescriptorHelper.Parse(Name, Validate, stateOutput.SetValueLong, input);
-    // }
+    
+    public PropertyError[] SetValue(long? input, IDataEntryTypedValuesState stateOutput)
+    {
+        var errors = Validate(input);
+        if (errors.Length == 0)
+        {
+            if (input == null)
+            {
+                stateOutput.SetNullValue(Name);
+            }
+            else
+            {
+                stateOutput.SetValue(Name, input.Value);
+            }
+        }
+        stateOutput.SetErrors(Name, errors);
+        return errors;
+    }
     
     public PropertyError[] Validate(string? inputText)
     {

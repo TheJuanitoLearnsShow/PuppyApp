@@ -45,6 +45,24 @@ public class DateTimeOffsetPropertyDescriptor : IPrimitivePropertyDescriptor
         return PropertyDescriptorHelper.Parse(Name, Validate, stateOutput.SetValueDateTimeOffset, input);
     }
     
+    public PropertyError[] SetValue(DateTimeOffset? input, IDataEntryTypedValuesState stateOutput)
+    {
+        var errors = Validate(input);
+        if (errors.Length == 0)
+        {
+            if (input == null)
+            {
+                stateOutput.SetNullValue(Name);
+            }
+            else
+            {
+                stateOutput.SetValue(Name, input.Value);
+            }
+        }
+        stateOutput.SetErrors(Name, errors);
+        return errors;
+    }
+
     public PropertyError[] Validate(string? inputText)
     {
         if (IsRequired && inputText == null)
