@@ -1,3 +1,5 @@
+using Puppy.Types;
+
 namespace PuppyApp.UnoApp.Presentation;
 
 public partial record MainModel
@@ -13,7 +15,10 @@ public partial record MainModel
         Title = "Main";
         Title += $" - {localizer["ApplicationName"]}";
         Title += $" - {appInfo?.Value?.Environment}";
+        var prop1 = new StringPropertyDescriptor("MiddleName", 3, true);
+        Editor1 = new BindableCallParameterModel(prop1);
     }
+    
 
     public string? Title { get; }
 
@@ -24,4 +29,6 @@ public partial record MainModel
         var name = await Name;
         await _navigator.NavigateViewModelAsync<SecondModel>(this, data: new Entity(name!, 0));
     }
+    
+    public BindableCallParameterModel Editor1 {get;set;}
 }
