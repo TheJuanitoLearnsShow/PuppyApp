@@ -16,7 +16,7 @@ public partial record MainModel
         Title += $" - {localizer["ApplicationName"]}";
         Title += $" - {appInfo?.Value?.Environment}";
         var prop1 = new StringPropertyDescriptor("MiddleName", 3, true);
-        Editor1 = new BindableCallParameterModel(prop1);
+        Editors = [new BindableCallParameterModel(prop1)];
     }
 
     public string? Title { get; }
@@ -28,5 +28,5 @@ public partial record MainModel
         var name = await Name;
         await _navigator.NavigateViewModelAsync<SecondModel>(this, data: new Entity(name!));
     }
-    public BindableCallParameterModel Editor1 {get;set;}
+    public BindableCallParameterModel[] Editors {get;set;}
 }

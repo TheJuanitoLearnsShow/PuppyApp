@@ -4,8 +4,26 @@
       xmlns:local="using:PuppyApp.UnoXaml.Presentation"
       xmlns:uen="using:Uno.Extensions.Navigation.UI"
       xmlns:utu="using:Uno.Toolkit.UI"
+      xmlns:DataTemplateSelectors="clr-namespace:PuppyApp.Uno.Templates"
+      xmlns:templates="using:PuppyApp.UnoXaml.Presentation.Templates"
       NavigationCacheMode="Required"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+  <Page.Resources>
+    <DataTemplate x:Key="StringEditorTemplateKey">
+      <StackPanel Orientation="Horizontal"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Spacing="16">
+        <TextBlock Text="{Binding Label}"></TextBlock>
+        <TextBox Text="{Binding EditValue, Mode=TwoWay}"/>
+        <TextBlock Text="{Binding Error}"></TextBlock>
+      </StackPanel>
+    </DataTemplate>
+    <templates:ParameterControlSelector
+      x:Key="ParameterControlSelector"
+      StringEditorTemplate = "{StaticResource StringEditorTemplateKey}"/>
+  </Page.Resources>
   <ScrollViewer>
     <Grid utu:SafeArea.Insets="VisibleBounds">
       <Grid.RowDefinitions>
@@ -18,17 +36,14 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Spacing="16">
-        <StackPanel Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Spacing="16" DataContext="{Binding Editor1}">
-          <TextBlock Text="{Binding Label}"></TextBlock>
-          <TextBox Text="{Binding EditValue, Mode=TwoWay}"
-                   />
-          <TextBlock Text="{Binding Error}"></TextBlock>
-        </StackPanel>
-        <TextBox Text="{Binding Name, Mode=TwoWay}"
-                 PlaceholderText="Enter your name:" />
+        <ItemsControl
+
+          ItemsSource="{Binding Editors}"
+          ItemTemplateSelector="{StaticResource ParameterControlSelector}">
+
+        </ItemsControl>
+
+
         <Button Content="Go to Second Page"
             AutomationProperties.AutomationId="SecondPageButton"
             Command="{Binding GoToSecond}" />
