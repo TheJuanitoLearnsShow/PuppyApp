@@ -4,7 +4,6 @@
       xmlns:local="using:PuppyApp.UnoXaml.Presentation"
       xmlns:uen="using:Uno.Extensions.Navigation.UI"
       xmlns:utu="using:Uno.Toolkit.UI"
-      xmlns:DataTemplateSelectors="clr-namespace:PuppyApp.Uno.Templates"
       xmlns:templates="using:PuppyApp.UnoXaml.Presentation.Templates"
       NavigationCacheMode="Required"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -15,13 +14,13 @@
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center"
                   Spacing="16">
-        <TextBlock Text="{Binding Label}"></TextBlock>
-        <TextBox Text="{Binding EditValue, Mode=TwoWay}"/>
-        <TextBlock Text="{Binding Error}"></TextBlock>
+        <TextBlock Text="{Binding Label}" VerticalAlignment="Center"></TextBlock>
+        <TextBox Text="{Binding EditValue, Mode=TwoWay}" VerticalAlignment="Center"/>
+        <TextBlock Text="{Binding Error}" VerticalAlignment="Center"></TextBlock>
       </StackPanel>
     </DataTemplate>
     <templates:ParameterControlSelector
-      x:Key="ParameterControlSelector"
+      x:Key="ParameterControlSelectorKey"
       StringEditorTemplate = "{StaticResource StringEditorTemplateKey}"/>
   </Page.Resources>
   <ScrollViewer>
@@ -36,13 +35,9 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Spacing="16">
-        <ItemsControl
-
-          ItemsSource="{Binding Editors}"
-          ItemTemplateSelector="{StaticResource ParameterControlSelector}">
-
+        <ItemsControl ItemsSource="{Binding Editors}"
+                      ItemTemplateSelector="{StaticResource ParameterControlSelectorKey}">
         </ItemsControl>
-
 
         <Button Content="Go to Second Page"
             AutomationProperties.AutomationId="SecondPageButton"
