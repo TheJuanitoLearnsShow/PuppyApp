@@ -65,9 +65,9 @@ public class LongPropertyDescriptor : IPrimitivePropertyDescriptor
     
     public PropertyError[] Validate(string? inputText)
     {
-        if (IsRequired && string.IsNullOrWhiteSpace(inputText))
+        if (string.IsNullOrWhiteSpace(inputText))
         {
-            return new[] { PropertyError.IsRequired };
+            return IsRequired ? [PropertyError.IsRequired] : [];
         }
 
         if (long.TryParse(inputText, out var newValue))

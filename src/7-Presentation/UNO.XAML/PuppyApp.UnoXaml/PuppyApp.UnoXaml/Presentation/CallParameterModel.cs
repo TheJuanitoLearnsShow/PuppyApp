@@ -5,11 +5,11 @@ namespace PuppyApp.UnoXaml.Presentation;
 
 public partial record CallParameterModel
 {
-    private readonly StringPropertyDescriptor _propertyDescriptor;
+    public IPrimitivePropertyDescriptor PropertyDescriptor { get; }
 
-    public CallParameterModel(StringPropertyDescriptor propertyDescriptor)
+    public CallParameterModel(IPrimitivePropertyDescriptor propertyDescriptor)
     {
-        _propertyDescriptor = propertyDescriptor;
+        PropertyDescriptor = propertyDescriptor;
         Label = State<string>.Value(this, () => propertyDescriptor.Name.Humanize());
     }
 
@@ -23,7 +23,7 @@ public partial record CallParameterModel
 
     private string ValidateEditValue(string editValue)
     {
-        var errors = _propertyDescriptor.Validate(editValue);
+        var errors = PropertyDescriptor.Validate(editValue);
         return string.Join(" | ", errors.Select(e => e.Description));
     }
 }

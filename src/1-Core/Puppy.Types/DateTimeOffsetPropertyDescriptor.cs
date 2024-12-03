@@ -65,9 +65,9 @@ public class DateTimeOffsetPropertyDescriptor : IPrimitivePropertyDescriptor
 
     public PropertyError[] Validate(string? inputText)
     {
-        if (IsRequired && inputText == null)
+        if (string.IsNullOrWhiteSpace(inputText))
         {
-            return [PropertyError.IsRequired];
+            return IsRequired ? [PropertyError.IsRequired] : [];
         }
         var isValidParsedValue = DateTimeOffset.TryParse(inputText, out var newValue);
         if (isValidParsedValue)

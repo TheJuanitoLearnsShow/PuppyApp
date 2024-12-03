@@ -66,9 +66,9 @@ public class IntPropertyDescriptor : IPrimitivePropertyDescriptor
     
     public PropertyError[] Validate(string? inputText)
     {
-        if (IsRequired && string.IsNullOrWhiteSpace(inputText))
+        if (string.IsNullOrWhiteSpace(inputText))
         {
-            return [PropertyError.IsRequired];
+            return IsRequired ? [PropertyError.IsRequired] : [];
         }
         var isNumeric = int.TryParse(inputText, out var newValue);
         if (isNumeric)

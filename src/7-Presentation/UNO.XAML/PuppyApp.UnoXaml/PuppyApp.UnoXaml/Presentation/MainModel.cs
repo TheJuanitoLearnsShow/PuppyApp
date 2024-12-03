@@ -15,8 +15,15 @@ public partial record MainModel
         Title = "Main";
         Title += $" - {localizer["ApplicationName"]}";
         Title += $" - {appInfo?.Value?.Environment}";
-        var prop1 = new StringPropertyDescriptor("MiddleName", 3, true);
-        Editors = [new BindableCallParameterModel(prop1)];
+        var props = new StringPropertyDescriptor("MiddleName", 3, true);
+        Editors = (new IPrimitivePropertyDescriptor[] {
+            
+            new IntPropertyDescriptor("Age", 3, true ),
+            new IntPropertyDescriptor("Grade", 2, false ),
+            new StringPropertyDescriptor("MiddleName", 3, true ),
+            new DateTimeOffsetPropertyDescriptor("EnrollmentDate", true )
+            
+        }).Select(p => new BindableCallParameterModel(p)).ToArray();
     }
 
     public string? Title { get; }

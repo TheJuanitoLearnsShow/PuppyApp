@@ -67,7 +67,7 @@ public class PuppyTypesTest
             {"EnrollmentDate", new DataEntryInput() { PrimitiveValue = "2024-09-01"}},
         };
         var state = new DictDataEntryValuesState();
-        var results = model.(dataInput, state);
+        var results = model.Parse(dataInput, state);
     
         Assert.False(results.IsValid);
 

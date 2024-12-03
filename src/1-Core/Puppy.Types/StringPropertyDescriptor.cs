@@ -57,9 +57,9 @@ public class StringPropertyDescriptor : IPrimitivePropertyDescriptor
     }
     public PropertyError[] Validate(string? inputText)
     {
-        if (IsRequired && string.IsNullOrWhiteSpace(inputText))
+        if (string.IsNullOrWhiteSpace(inputText))
         {
-            return [PropertyError.IsRequired];
+            return IsRequired ? [PropertyError.IsRequired] : [];
         }
 
         if (inputText?.Length < MinLength)

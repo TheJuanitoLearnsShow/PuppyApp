@@ -1,7 +1,7 @@
 <Project Sdk="Uno.Sdk">
     <PropertyGroup>
 <!--        <TargetFrameworks>net8.0-windows10.0.19041;net8.0-desktop</TargetFrameworks>-->
-      <TargetFrameworks>net9.0-windows10.0.19041</TargetFrameworks>
+      <TargetFramework>net9.0-windows10.0.26100</TargetFramework>
 
         <OutputType>Exe</OutputType>
         <UnoSingleProject>true</UnoSingleProject>
