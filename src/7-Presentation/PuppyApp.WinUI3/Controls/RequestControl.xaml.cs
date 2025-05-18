@@ -12,6 +12,8 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Puppy.Types;
+using PuppyApp.ReactiveViewModels;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -23,9 +25,14 @@ namespace PuppyApp.WinUI3.Controls
         public RequestControl()
         {
             this.InitializeComponent();
-            var request = new Puppy.SqlViewModels.SpParameterViewModel(connStr, "spEnrollStudent");
-            var spParams = [ new ];
-            request.LoadNewCallParameters(spParams.Select(p => new Puppy.SqlViewModels.SpParameterViewModel(p, string.Empty, connStr)));
+            
+            var ageProp = new IntPropertyDescriptor("Age", 3, true);
+            var vm = new CallParameterViewModel(ageProp);
+            var request = new RequestViewModel()
+            {
+                CallParameters = 
+                new System.Collections.ObjectModel.ObservableCollection<CallParameterViewModel>([vm])
+            };
             DataContext = request;
         }
     }

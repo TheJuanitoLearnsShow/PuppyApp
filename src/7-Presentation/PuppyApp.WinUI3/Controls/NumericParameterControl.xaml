@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rxui:NumericParameterControlBase  
+    x:Class="PuppyApp.WinUI3.Controls.NumericParameterControl"  
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
+    xmlns:rxui="using:PuppyApp.WinUI3.Controls"  
+    xmlns:local="using:PuppyApp.WinUI3.Controls"  
+    xmlns:viewmodels="using:PuppyApp.ReactiveViewModels">  
+
+    <StackPanel Margin="0,0,0,8">  
+        <TextBlock x:Name="LabelTxt" Foreground="AliceBlue" />  
+        <TextBox x:Name="EditValueTxt" />  
+        <TextBlock x:Name="ErrorTxt"  
+                Foreground="Red" />  
+    </StackPanel>  
+</rxui:NumericParameterControlBase>

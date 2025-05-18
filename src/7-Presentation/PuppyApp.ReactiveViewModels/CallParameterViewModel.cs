@@ -6,18 +6,28 @@ using System.Reactive.Concurrency;
 
 namespace PuppyApp.ReactiveViewModels;
 
-public partial class CallParameterModel : ReactiveObject
+public partial class CallParameterViewModel : ReactiveObject
 {
     public IPrimitivePropertyDescriptor PropertyDescriptor { get; }
 
-    public CallParameterModel(IPrimitivePropertyDescriptor propertyDescriptor)
+    public CallParameterViewModel(IPrimitivePropertyDescriptor propertyDescriptor)
     {
         PropertyDescriptor = propertyDescriptor;
+
+        Label = propertyDescriptor.Name;
+        // _errorHelper = this.WhenAnyValue(v => v.ObservableForProperty(x => x.EditValue) 
+        //     .Throttle(TimeSpan.FromMilliseconds(800), RxApp.TaskpoolScheduler)
+        //     .Select(x => x.Value)
+        //     .DistinctUntilChanged()
+        //     )
+        //     .ToProperty(this, x => ValidateEditValue(x.EditValue));;
         
         _errorHelper = this.WhenAnyValue(x => x.EditValue) 
-            .Throttle(TimeSpan.FromMilliseconds(800), RxApp.TaskpoolScheduler)
-            .DistinctUntilChanged()
-            .ToProperty(this, x => ValidateEditValue(x.EditValue));;
+                // .Throttle(TimeSpan.FromMilliseconds(800), RxApp.TaskpoolScheduler)
+                .DistinctUntilChanged()
+                .Select(ValidateEditValue)
+                .ToProperty(this, x => x.Error);
+          
     }
     
     [Reactive]

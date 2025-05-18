@@ -6,110 +6,46 @@
     xmlns:local="using:PuppyApp.WinUI3.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:templates="using:PuppyApp.WinUI3.Templates"
     mc:Ignorable="d">
 
     <UserControl.Resources>
-        <DataTemplateSelectors:ParameterControlSelector 
-x:Key="ParameterControlSelector" />
-
-        <DataTemplate x:Key="String.Template">
-            <Grid Margin="16">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"></ColumnDefinition>
-                    <ColumnDefinition Width="8*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{Binding Label}" HorizontalAlignment="Right" Margin="8" VerticalAlignment="Center"></TextBlock>
-                <TextBox Grid.Column="1" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="{Binding Label}"></TextBox>
-            </Grid>
-        </DataTemplate>
-        <DataTemplate x:Key="DateTime.Template">
-            <Grid Margin="16">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"></ColumnDefinition>
-                    <ColumnDefinition Width="8*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{Binding Label}" HorizontalAlignment="Right" Margin="8" VerticalAlignment="Center"></TextBlock>
-                <DatePicker Grid.Column="1" SelectedDate="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="{Binding Label}"></DatePicker>
-            </Grid>
+        <templates:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+        <DataTemplate x:Key="StringParameterTemplate">
+            <StackPanel Margin="0,0,0,8">
+                <TextBlock Text="{Binding Label}" />
+                <TextBox Text="{Binding EditValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="{Binding Error}" 
+                           Foreground="Red"
+                           Visibility="{Binding Error, Converter={StaticResource StringToVisibilityConverter}}" />
+            </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="Lookup.Template">
-            <Grid Margin="16">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"></ColumnDefinition>
-                    <ColumnDefinition Width="8*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Column="0" Text="{Binding Label}" HorizontalAlignment="Right" Margin="8" VerticalAlignment="Center"></TextBlock>
-
-                <!--<ComboBox Grid.Column="1" ItemsSource="{Binding Lookup.SearchResults}"
-                        IsEditable="True"
-                        SelectedValue="{Binding Value, Mode=OneWayToSource}"
-                        Text="{Binding Lookup.SearchQuery, UpdateSourceTrigger=PropertyChanged}"
-                        SelectedValuePath="Value"
-                        materialDesign:HintAssist.Hint="{Binding Label}">
-                  
-              </ComboBox>-->
-                <!--<StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch">
-                  <ListBox ItemsSource="{Binding Lookup.SearchResults}">
-                      <ListBox.ItemTemplate>
-                          <DataTemplate>
-                              <TextBlock Text="{Binding Label}"></TextBlock>
-                          </DataTemplate>
-                      </ListBox.ItemTemplate>
-                  </ListBox>
-              </StackPanel>-->
-                <Button Grid.Column="1" Padding="4" Margin="16"
-                      Command="{Binding ExecuteCommand}" Content="{Binding Lookup.Value.Label}"></Button>
-                <!--<materialDesign:Card Grid.Column="1" Padding="4" Margin="16">
-                  <TextBlock Text="{Binding Lookup.Value.Label}"></TextBlock>
-                  
-              </materialDesign:Card>-->
-                <Popup Grid.Column="1" Grid.Row="1" IsOpen="{Binding Lookup.ShowResults}"    
-                               PlacementTarget = "{Binding ElementName = SearchQueryTxt}"
-                     Placement="Bottom" 
-                               AllowsTransparency = "True" PopupAnimation = "Slide"
-                     HorizontalAlignment="Stretch" >
-                    <Grid>
-                        <Grid.RowDefinitions >
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="4*"/>
-
-                        </Grid.RowDefinitions>
-                        <TextBox Grid.Row="0" Name="SearchQueryTxt" Text="{Binding Lookup.SearchQuery, UpdateSourceTrigger=PropertyChanged}" 
-                       materialDesign:HintAssist.Hint="{Binding Label}"></TextBox>
-
-
-                        <ListBox Grid.Row="1" HorizontalAlignment="Stretch"
-                               ItemsSource="{Binding Lookup.SearchResults}" 
-                               SelectedValuePath="Value"
-                               SelectedValue="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
-                               >
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <materialDesign:Card Padding="32" Margin="16">
-                                        <TextBlock Text="{Binding Label}"></TextBlock>
-                                    </materialDesign:Card>
-
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
-
-
-                </Popup>
-            </Grid>
+        <DataTemplate x:Key="NumberParameterTemplate">
+            <local:NumericParameterControl Margin="0,0,0,8">
+            </local:NumericParameterControl>
         </DataTemplate>
 
+        <DataTemplate x:Key="BooleanParameterTemplate">
+            <StackPanel Margin="0,0,0,8">
+                <CheckBox Content="{Binding Label}"
+                          IsChecked="{Binding EditValue, Mode=TwoWay}" />
+                <TextBlock Text="{Binding Error}"
+                           Foreground="Red"
+                           Visibility="{Binding Error, Converter={StaticResource StringToVisibilityConverter}}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <templates:ParameterControlSelector x:Key="ParameterControlSelector"
+                                        StringParameterTemplate="{StaticResource StringParameterTemplate}"
+                                        NumberParameterTemplate="{StaticResource NumberParameterTemplate}"
+                                        BooleanParameterTemplate="{StaticResource BooleanParameterTemplate}" />
     </UserControl.Resources>
     <StackPanel>
 
         <ItemsControl Name="spCallParameters" ItemsSource="{Binding CallParameters}" ItemTemplateSelector="{StaticResource ParameterControlSelector}">
 
         </ItemsControl>
-        <Button Command="{Binding ExecuteCommand}">Execute</Button>
+        <!-- <Button Command="{Binding ExecuteCommand}">Execute</Button> -->
     </StackPanel>
 </UserControl>
