@@ -23,13 +23,15 @@ public partial class CallParameterViewModel : ReactiveObject
         //     .ToProperty(this, x => ValidateEditValue(x.EditValue));;
         
         _errorHelper = this.WhenAnyValue(x => x.EditValue) 
-                // .Throttle(TimeSpan.FromMilliseconds(800), RxApp.TaskpoolScheduler)
+                .Throttle(TimeSpan.FromMilliseconds(800), RxApp.TaskpoolScheduler)
                 .DistinctUntilChanged()
                 .Select(ValidateEditValue)
                 .ToProperty(this, x => x.Error);
           
     }
-    
+
+    [Reactive]
+    private bool _hasBeenEdited;
     [Reactive]
     private string _editValue = string.Empty;
     [Reactive]
@@ -40,6 +42,9 @@ public partial class CallParameterViewModel : ReactiveObject
     
     private string ValidateEditValue(string editValue)
     {
+        if (HasBeenEdited == false && string.IsNullOrEmpty(editValue))
+            return string.Empty;
+        HasBeenEdited = true;
         var errors = PropertyDescriptor.Validate(editValue);
         return string.Join(" | ", errors.Select(e => e.Description));
     }

@@ -33,6 +33,7 @@ namespace PuppyApp.WinUI3.Controls
             InitializeComponent();
             this.WhenActivated(disposableRegistration =>
             {
+                ViewModel = this.DataContext as CallParameterViewModel;
                 // Notice we don't have to provide a converter, on WPF a global converter is
                 // registered which knows how to convert a boolean into visibility.
                 this.OneWayBind(ViewModel,
@@ -45,11 +46,9 @@ namespace PuppyApp.WinUI3.Controls
                 //    ,
                 //    view => view.EditValueTxt.Text)
                 //    .DisposeWith(disposableRegistration);
-                this.WhenAnyValue(x => x.EditValueTxt.Text)
-                    .Throttle(TimeSpan.FromMilliseconds(800))
-                    .DistinctUntilChanged()
-                    .ObserveOn(RxApp.MainThreadScheduler)
-                    .BindTo(this, x => x.ViewModel.EditValue)
+                this.Bind(ViewModel,
+                    viewModel => viewModel.EditValue,
+                    view => view.EditValueTxt.Text)
                     .DisposeWith(disposableRegistration);
 
                 this.OneWayBind(ViewModel,
