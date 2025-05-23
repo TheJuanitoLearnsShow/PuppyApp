@@ -23,9 +23,10 @@ public partial class CallParameterViewModel : ReactiveObject
         //     .ToProperty(this, x => ValidateEditValue(x.EditValue));;
         
         _errorHelper = this.WhenAnyValue(x => x.EditValue) 
-                .Throttle(TimeSpan.FromMilliseconds(800), RxApp.TaskpoolScheduler)
+                .Throttle(TimeSpan.FromMilliseconds(800), RxApp.MainThreadScheduler)
                 .DistinctUntilChanged()
                 .Select(ValidateEditValue)
+                //.ObserveOn(RxApp.MainThreadScheduler)
                 .ToProperty(this, x => x.Error);
           
     }
