@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -41,14 +42,18 @@ namespace PuppyApp.WinUI3.Controls
                     view => view.LabelTxt.Text)
                     .DisposeWith(disposableRegistration);
 
-                //this.Bind(ViewModel,
-                //    viewModel => viewModel.EditValue
-                //    ,
-                //    view => view.EditValueTxt.Text)
-                //    .DisposeWith(disposableRegistration);
-                this.Bind(ViewModel,
-                    viewModel => viewModel.EditValue,
-                    view => view.EditValueTxt.Text)
+                // Throttled binding: view.EditValueTxt.Text -> viewModel.EditValue (800ms debounce)
+                // Model -> View (immediate)
+                this.WhenAnyValue(x => x.ViewModel.EditValue)
+                    .BindTo(this, x => x.EditValueTxt.Text)
+                    .DisposeWith(disposableRegistration);
+
+                // View -> Model (throttled)
+                this.WhenAnyValue(x => x.EditValueTxt.Text)
+                    .Skip(1) // skip initial value to avoid feedback loop
+                    .Throttle(TimeSpan.FromMilliseconds(800))
+                    .ObserveOn(RxApp.MainThreadScheduler)
+                    .BindTo(this, x => x.ViewModel.EditValue)
                     .DisposeWith(disposableRegistration);
 
                 this.OneWayBind(ViewModel,
